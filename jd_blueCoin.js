@@ -1,5 +1,5 @@
 /*
-京小超兑换奖品 脚本地址：https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_blueCoin.js
+京小超兑换奖品 脚本地址：https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_blueCoin.js
 感谢@yangtingxiao提供PR
 更新时间：2020-12-24
 支持京东多个账号
@@ -7,12 +7,12 @@
 ======================quantumultx===============
 [task_local]
 #京小超兑换奖品
-0 0 0 * * * https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_blueCoin.js, tag=京小超兑换奖品, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jxc.png, enabled=true
+0 0 0 * * * https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_blueCoin.js, tag=京小超兑换奖品, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jxc.png, enabled=true
 ====================Loon=================
 [Script]
-cron "0 0 0 * * *" script-path=https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_blueCoin.js,tag=京小超兑换奖品
+cron "0 0 0 * * *" script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_blueCoin.js,tag=京小超兑换奖品
 ===================Surge==================
-京小超兑换奖品 = type=cron,cronexp="0 0 0 * * *",wake-system=1,timeout=20,script-path=https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_blueCoin.js
+京小超兑换奖品 = type=cron,cronexp="0 0 0 * * *",wake-system=1,timeout=20,script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_blueCoin.js
  */
 const $ = new Env('京小超兑换奖品');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -92,7 +92,8 @@ async function PrizeIndex() {
   // await smtg_materialPrizeIndex();//兑换酒类奖品，此兑换API与之前的兑换京豆类的不一致，故目前无法进行
   // const prizeList = [...$.queryPrizeData, ...$.materialPrizeIndex];
   const prizeList = [...$.queryPrizeData];
-  if (`${coinToBeans}` === '1000') {
+  if (`${coinToBeans}` === '1000') 
+  {
     if (prizeList[1] && prizeList[1].beanType === 'BeanPackage') {
       console.log(`查询换${prizeList[1].title}ID成功，ID:${prizeList[1].prizeId}`)
       $.title = prizeList[1].title;
@@ -117,7 +118,8 @@ async function PrizeIndex() {
       console.log(`兑换失败,您目前蓝币${$.totalBlue}个,不足以兑换${$.title}所需的${$.blueCost}个`);
       $.beanerr = `兑换失败,您目前蓝币${$.totalBlue}个,不足以兑换${$.title}所需的${$.blueCost}个`;
     }
-  } else if (`${coinToBeans}` === '20') {
+  } else if (`${coinToBeans}` === '20') 
+  {
     if (prizeList[0] && prizeList[0].beanType === 'Bean') {
       console.log(`查询换${prizeList[0].title}ID成功，ID:${prizeList[0].prizeId}`)
       $.title = prizeList[0].title;
