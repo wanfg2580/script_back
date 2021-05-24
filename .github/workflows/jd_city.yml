@@ -6,11 +6,11 @@ name: 城城领现金
 on:
   workflow_dispatch:
   schedule:
-    - cron: '40 8 * * *'
+    - cron: '0 0-23/1 * * *'
   watch:
     types: started
   repository_dispatch:
-    types: car
+    types: city
 jobs:
   build:
 
