@@ -254,8 +254,8 @@ function pigPetLogin() {
                   console.log(`\n京东账号${$.index} ${$.nickName} 未开启养猪活动,请手动去京东金融APP开启此活动\n`)
                   return
                 }
-                if (data.resultData.resultData.wished) {
-                  console.log(data.resultData.resultData.wishAward)
+                console.log(data.resultData)
+                if (data.resultData.resultData.wishAward) {
                   allMessage += `京东账号${$.index} ${$.nickName || $.UserName}\n${data.resultData.resultData.wishAward.name}已可兑换${$.index !== cookiesArr.length ? '\n\n' : ''}`
                 }
               } else {
