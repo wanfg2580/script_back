@@ -19,14 +19,14 @@ jobs:
     steps:
       - name: Checkout
         run: |
-          git clone ${{ secrets.GIT_CLONE_URL }} ~/scripts
+          git clone ${{ secrets.GIT_CLONE_URL }} ~/test
       - name: Use Node.js 10.x
         uses: actions/setup-node@v1
         with:
           node-version: 10.x
       - name: npm install
         run: |
-          cd ~/scripts
+          cd ~/test
           npm install
       - name: '运行 【金融养猪】'
         run: |
