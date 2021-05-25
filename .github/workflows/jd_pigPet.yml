@@ -30,7 +30,7 @@ jobs:
           npm install
       - name: '运行 【金融养猪】'
         run: |
-          cd ~/scripts
+          cd ~/test
           node jd_pigPet.js
         env:
           JD_COOKIE: ${{ secrets.JD_COOKIE }}

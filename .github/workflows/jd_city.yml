@@ -1,16 +1,16 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: 城城领现金
+name: 金融养猪
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0-23/1 * * *'
+    - cron: '12 * * * *'
   watch:
     types: started
   repository_dispatch:
-    types: city
+    types: pigPet
 jobs:
   build:
 
@@ -18,26 +18,20 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          repository: danwangshimoluo/JdScripts
-      - name: Use Node.js ${{ matrix.node-version }}
+        run: |
+          git clone ${{ secrets.GIT_CLONE_URL }} ~/test
+      - name: Use Node.js 10.x
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: Cache node_modules
-        uses: actions/cache@v2 # 使用 GitHub 官方的缓存 Action。
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }} # 使用 package-lock.json 的 Hash 作为缓存的 key。也可以使用 package.json 代替
+          node-version: 10.x
       - name: npm install
         run: |
+          cd ~/test
           npm install
-      - name: '运行 【城城领现金】'
+      - name: '运行 【金融养猪】'
         run: |
-          node jd_city.js
+          cd ~/test
+          node jd_pigPet.js
         env:
           JD_COOKIE: ${{ secrets.JD_COOKIE }}
           JD_DEBUG: ${{ secrets.JD_DEBUG }}
