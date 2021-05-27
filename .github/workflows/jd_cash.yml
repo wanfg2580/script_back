@@ -37,7 +37,7 @@ jobs:
           npm install
       - name: '运行 【京东领现金】'
         run: |
-          node jd_cash.js
+          node jd_cash2.js
         env:
           JD_COOKIE: ${{ secrets.JD_COOKIE }}
           JD_DEBUG: ${{ secrets.JD_DEBUG }}
