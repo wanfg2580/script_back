@@ -37,7 +37,7 @@
 | 长期   | 东东超市兑换奖品          | [jd_blueCoin.js](https://raw.githubusercontent.com/l499477004/JD-scripts/master/jd_blueCoin.js)             |
 | 长期   | 口袋书店                      | [jd_bookshop.js](https://raw.githubusercontent.com/l499477004/JD-scripts/master/jd_bookshop.js)             |
 | 长期   | 京东汽车赛点兑换京豆    | [jd_car_exchange.js](https://raw.githubusercontent.com/l499477004/JD-scripts/master/jd_car_exchange.js)     |
-| 长期   | 签到领现金    | [jd_cash2.js](https://raw.githubusercontent.com/l499477004/JD-scripts/master/jd_cash.js)     |
+| 长期   | 签到领现金    | [jd_cash.js](https://raw.githubusercontent.com/l499477004/JD-scripts/master/jd_cash.js)     |
 | 长期   | 京东汽车签到                | [jd_car.js](https://raw.githubusercontent.com/l499477004/JD-scripts/master/jd_car.js)                       |
 | 长期   | 摇京豆                         | [jd_club_lottery.js](https://raw.githubusercontent.com/l499477004/JD-scripts/master/jd_club_lottery.js)     |
 | 长期   | 疯狂的JOY挂机                | [jd_crazy_joy_coin.js](https://raw.githubusercontent.com/l499477004/JD-scripts/master/jd_crazy_joy_coin.js) |
