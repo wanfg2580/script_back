@@ -1,3 +1,4 @@
+const notify = $.isNode() ? require('./sendNotify') : '';
 /*
 省钱大赢家之翻翻乐
 一天可翻多次，但有上限
@@ -57,15 +58,15 @@ const len = cookiesArr.length;
   }
   if (message) {
     $.msg($.name, '', message);
-    if ($.isNode()) await notify.sendNotify($.name, message);
+    //if ($.isNode()) await notify.sendNotify($.name, message);
   }
 })()
-    .catch((e) => {
-      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-    })
-    .finally(() => {
-      $.done();
-    })
+  .catch((e) => {
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+  })
+  .finally(() => {
+    $.done();
+  })
 
 async function main() {
   try {
