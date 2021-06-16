@@ -1,4 +1,3 @@
-const notify = $.isNode() ? require('./sendNotify') : '';
 /*
 省钱大赢家之翻翻乐
 一天可翻多次，但有上限
@@ -20,6 +19,7 @@ cron "20 * * * *" script-path=https://jdsharedresourcescdn.azureedge.net/jdresou
 省钱大赢家之翻翻乐 = type=cron,script-path=https://jdsharedresourcescdn.azureedge.net/jdresource/jd_big_winner.js, cronexpr="20 * * * *", timeout=3600, enable=true
  */
 const $ = new Env('省钱大赢家之翻翻乐');
+const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
