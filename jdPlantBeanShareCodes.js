@@ -10,6 +10,7 @@ let PlantBeanShareCodes = [
   //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
   'jdsomnk3cu55v2d3gpbhxyegb43h7wlwy7o5jii@eigrs7ai3ypy2ak3xzfd2j55dzjjoducqetmeki',
   'z4edafu3c64cuiev2gc2zhiapa3h7wlwy7o5jii',
+  'z4edafu3c64cuiev2gc2zhiapa3h7wlwy7o5jii',
   'z4edafu3c64cuiev2gc2zhiapa3h7wlwy7o5jii'
 ]
 // 判断github action里面是否有种豆得豆互助码
