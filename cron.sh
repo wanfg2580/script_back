@@ -18,7 +18,6 @@
 1 6,10,16 * * * bash /home/jimmy/jd.sh jd_bookshop
 2 0-23/4 * * * bash /home/jimmy/jd.sh jd_cash
 21 0-23/3 * * * bash /home/jimmy/jd.sh jd_jxmc
-30 8,13,19 * * * bash /home/jimmy/jd.sh jd_cfd
 13 14,15,17 * * * bash /home/jimmy/jd.sh jd_daily_lottery
 1 12,23 * * * bash /home/jimmy/jd.sh jd_family
 21 7,12,18 * * * bash /home/jimmy/jd.sh jd_fruit
@@ -47,7 +46,7 @@
 50 0,4 * * * bash /home/jimmy/jd.sh jd_by_ryhxj
 3 1,6 * * * /home/jimmy/jd.sh jd_earn30
 36 0,10,21 4-15 8 * /home/jimmy/jd.sh jd_doge
-18 0-23/2 * * * /home/jimmy/jd.sh jd_cfd
+18 1-23/1 * * * /home/jimmy/jd.sh jd_cfd
 18 0,1,9,14,18 * * * /home/jimmy/jd.sh jd_cfd_help
 0 0 * * * /home/jimmy/jd.sh jd_angryBean
 23 1,12,22 * * * /home/jimmy/jd.sh jd_bean_home
