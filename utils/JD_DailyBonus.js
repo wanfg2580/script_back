@@ -15,7 +15,7 @@
 
 开启抓包app后, Safari浏览器登录 https://bean.m.jd.com/bean/signIndex.action 点击签到并且出现签到日历后, 返回抓包app搜索关键字 functionId=signBean 复制请求头Cookie填入以下Key处的单引号内即可 */
 
-var Key = 'pt_pin=18189815038_p;pt_key=AAJgvcLgADDTci3VF6CAKdZtOEaGNB6cGfeHdnMo_kF59HdNC3aEAarcSmob1k4Ga5rszvVVL90;'; //单引号内自行填写您抓取的Cookie
+var Key = 'pt_pin=18189815038_p;pt_key=AAJhDOCaADBofKTvIOVjN36sxpBkJk5ZZ3zpNXgmB5E0PAREhmdOV0qXfTCXIxkwfqC7EvCNrek;'; //单引号内自行填写您抓取的Cookie
 
 var DualKey = ''; //如需双账号签到,此处单引号内填写抓取的"账号2"Cookie, 否则请勿填写
 
@@ -136,6 +136,8 @@ async function all() {
         JDUserSignPre(stop, 'JD3C', '京东商城-数码', '4SWjnZSCTHPYjE5T7j35rxxuMTb6'), //京东数码电器馆
         JDUserSignPre(stop, 'JDWomen', '京东商城-女装', 'DpSh7ma8JV7QAxSE2gJNro8Q2h9'), //京东女装馆
         JDUserSignPre(stop, 'JDBook', '京东商城-图书', '3SC6rw5iBg66qrXPGmZMqFDwcyXi'), //京东图书
+        JDUserSignPre(stop,'JDJiaDian','京东商城-小家电馆','3uvPyw1pwHARGgndatCXddLNUxHw'), // 京东小家电
+        JDUserSignPre(stop, 'ReceiveJD', '京东商城-领京豆', 'Ni5PUSK7fzZc4EKangHhqPuprn2'), //京东-领京豆
         JingRongDoll(stop, 'JTDouble', '京东金贴-双签', '1DF13833F7'), //京东金融 金贴双签
         // JingRongDoll(stop, 'XJDouble', '金融现金-双签', 'F68B2C3E71', '', '', '', 'xianjin') //京东金融 现金双签
       ]);
@@ -195,6 +197,8 @@ async function all() {
       // await JDUserSignPre(Wait(stop), 'JDLive', '京东智能-生活', 'KcfFqWvhb5hHtaQkS4SD1UU6RcQ'); //京东智能生活
       await JDUserSignPre(Wait(stop), 'JDClean', '京东商城-清洁', '2Tjm6ay1ZbZ3v7UbriTj6kHy9dn6'); //京东清洁馆
       await JDUserSignPre(Wait(stop), 'JDCare', '京东商城-个护', '2tZssTgnQsiUqhmg5ooLSHY9XSeN'); //京东个人护理馆
+      await JDUserSignPre(Wait(stop), 'JDJiaDian','京东商城-小家电馆','3uvPyw1pwHARGgndatCXddLNUxHw'); // 京东小家电馆
+      await JDUserSignPre(Wait(stop), 'ReceiveJD', '京东商城-领京豆', 'Ni5PUSK7fzZc4EKangHhqPuprn2'); //京东-领京豆
       // await JDUserSignPre(Wait(stop), 'JDJewels', '京东商城-珠宝', 'zHUHpTHNTaztSRfNBFNVZscyFZU'); //京东珠宝馆
       await JingRongDoll(Wait(stop), 'JDDouble', '金融京豆-双签', 'F68B2C3E71', '', '', '', 'jingdou'); //京东金融 京豆双签
       break;
