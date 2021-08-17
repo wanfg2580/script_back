@@ -11,6 +11,7 @@ let PetShareCodes = [
   'MTE1NDAxNzgwMDAwMDAwNDMzMjIwNjE=',
   'MTE1NDQ5OTUwMDAwMDAwMzg1MTk2MDk=',
   'MTE1NDQ5OTUwMDAwMDAwMzg1MTk2MDk=',
+  'MTE1NDQ5OTUwMDAwMDAwMzg1MTk2MDk=',
   'MTE1NDQ5OTUwMDAwMDAwMzg1MTk2MDk='
 ]
 // 判断github action里面是否有东东萌宠互助码

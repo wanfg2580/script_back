@@ -11,6 +11,7 @@ let FruitShareCodes = [
   'fef8473493034f8bbc5eedee6b873476',
   'c62ea653b99d43aa93c5aa6552191512',
   'c62ea653b99d43aa93c5aa6552191512',
+  'c62ea653b99d43aa93c5aa6552191512',
   'c62ea653b99d43aa93c5aa6552191512'
 ]
 // 判断github action里面是否有水果互助码
