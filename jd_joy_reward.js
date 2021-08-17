@@ -89,22 +89,23 @@ Date.prototype.Format = function (fmt) { //author: meizz
     await notify.sendNotify(`${$.name}`, `${allMessage}`)
   }
 })()
-    .catch((e) => {
-      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-    })
-    .finally(() => {
-      $.done();
-    })
-
+  .catch((e) => {
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+  })
+  .finally(() => {
+    $.done();
+  })
 
 async function joyReward() {
   try {
-    let nowtime = new Date().Format("s.S")
-    let starttime = process.env.JOY_STARTTIME ? process.env.JOY_STARTTIME : 60;
-    if(nowtime < 59) {
-      let sleeptime = (starttime - nowtime) * 1000;
-      console.log(`等待时间 ${sleeptime / 1000}`);
-      await zooFaker.sleep(sleeptime)
+    if (new Date().getMinutes() === 59) {
+      let nowtime = new Date().Format("s.S")
+      let starttime = process.env.JOY_STARTTIME ? process.env.JOY_STARTTIME : 60;
+      if(nowtime < 59) {
+        let sleeptime = (starttime - nowtime) * 1000;
+        console.log(`等待时间 ${sleeptime / 1000}`);
+        await zooFaker.sleep(sleeptime)
+      }
     }
     for (let j = 0; j <= 10; j++) {
       await getExchangeRewards();
@@ -220,7 +221,7 @@ async function joyReward() {
 }
 function getExchangeRewards() {
   let opt = {
-    url: "//jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F",
+    url: "//jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=ztmFUCxcPMNyUq0P",
     method: "GET",
     data: {},
     credentials: "include",
@@ -264,7 +265,7 @@ function getExchangeRewards() {
 function exchange(saleInfoId, orderSource) {
   let body = {"buyParam":{"orderSource":orderSource,"saleInfoId":saleInfoId},"deviceInfo":{}}
   let opt = {
-    "url": "//jdjoy.jd.com/common/gift/new/exchange?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F",
+    "url": "//jdjoy.jd.com/common/gift/new/exchange?reqSource=h5&invokeKey=ztmFUCxcPMNyUq0P",
     "data":body,
     "credentials":"include","method":"POST","header":{"content-type":"application/json"}
   }
@@ -418,7 +419,7 @@ function taroRequest(e) {
     },
     "AesDecrypt": function AesDecrypt(e) {
       var n = a.enc.Hex.parse(e)
-          , t = a.enc.Base64.stringify(n);
+        , t = a.enc.Base64.stringify(n);
       return a.AES.decrypt(t, o, {
         "iv": r,
         "mode": a.mode.CBC,
@@ -445,9 +446,9 @@ function taroRequest(e) {
         n[t] = sortByLetter(e[t], n[t])
     } else
       !(e instanceof Array) && e instanceof Object ? (n = n || {},
-          Object.keys(e).sort().map(function(t) {
-            n[t] = sortByLetter(e[t], n[t])
-          })) : n = e;
+        Object.keys(e).sort().map(function(t) {
+          n[t] = sortByLetter(e[t], n[t])
+        })) : n = e;
     return n
   }
   const s = function isInWhiteAPI(e) {
@@ -476,33 +477,33 @@ function taroRequest(e) {
   }
 
   var n = e
-      , t = (n.header,
-      n.url);
+    , t = (n.header,
+    n.url);
   t += (t.indexOf("?") > -1 ? "&" : "?") + "reqSource=h5";
   var _a = function getTimeSign(e) {
     var n = e.url
-        , t = e.method
-        , a = void 0 === t ? "GET" : t
-        , i = e.data
-        , r = e.header
-        , m = void 0 === r ? {} : r
-        , p = a.toLowerCase()
-        , g = _o.keyCode
-        , f = m["content-type"] || m["Content-Type"] || ""
-        , h = ""
-        , u = +new Date();
+      , t = e.method
+      , a = void 0 === t ? "GET" : t
+      , i = e.data
+      , r = e.header
+      , m = void 0 === r ? {} : r
+      , p = a.toLowerCase()
+      , g = _o.keyCode
+      , f = m["content-type"] || m["Content-Type"] || ""
+      , h = ""
+      , u = +new Date();
     return h = "get" !== p &&
     ("post" !== p || "application/x-www-form-urlencoded" !== f.toLowerCase() && i && Object.keys(i).length) ?
-        _o.Md5encode(_o.Base64Encode(_o.AesEncrypt("" + JSON.stringify(c(i)))) + "_" + g + "_" + u) :
-        _o.Md5encode("_" + g + "_" + u),
+      _o.Md5encode(_o.Base64Encode(_o.AesEncrypt("" + JSON.stringify(c(i)))) + "_" + g + "_" + u) :
+      _o.Md5encode("_" + g + "_" + u),
     s(n) && (n = d(n, {
       "lks": h,
       "lkt": u
     }),
-        n = l(n)),
-        Object.assign(e, {
-          "url": n
-        })
+      n = l(n)),
+      Object.assign(e, {
+        "url": n
+      })
   }(e = Object.assign(e, {
     "url": t
   }));

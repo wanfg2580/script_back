@@ -113,11 +113,11 @@ var mode = $.isNode() ? (process.env.angryBeanMode ? process.env.angryBeanMode :
           require('./sendNotify').sendNotify(`真·抢京豆`, msg);
      }
 })().catch((e) => {
-          $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-     })
-     .finally(() => {
-          $.done();
-     })
+     $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+})
+  .finally(() => {
+       $.done();
+  })
 
 async function getTuanInfo(cookie) {
      return await requestApi('signBeanGroupStageIndex', cookie, {
@@ -300,8 +300,8 @@ function requireConfig() {
 function randomString(e) {
      e = e || 32;
      let t = "abcdefhijkmnprstwxyz2345678",
-          a = t.length,
-          n = "";
+       a = t.length,
+       n = "";
      for (i = 0; i < e; i++)
           n += t.charAt(Math.floor(Math.random() * a));
      return n
@@ -408,9 +408,9 @@ function Env(t, e) {
                if (!this.isNode()) return {}; {
                     this.fs = this.fs ? this.fs : require("fs"), this.path = this.path ? this.path : require("path");
                     const t = this.path.resolve(this.dataFile),
-                         e = this.path.resolve(process.cwd(), this.dataFile),
-                         s = this.fs.existsSync(t),
-                         i = !s && this.fs.existsSync(e);
+                      e = this.path.resolve(process.cwd(), this.dataFile),
+                      s = this.fs.existsSync(t),
+                      i = !s && this.fs.existsSync(e);
                     if (!s && !i) return {}; {
                          const i = s ? t : e;
                          try {
@@ -425,10 +425,10 @@ function Env(t, e) {
                if (this.isNode()) {
                     this.fs = this.fs ? this.fs : require("fs"), this.path = this.path ? this.path : require("path");
                     const t = this.path.resolve(this.dataFile),
-                         e = this.path.resolve(process.cwd(), this.dataFile),
-                         s = this.fs.existsSync(t),
-                         i = !s && this.fs.existsSync(e),
-                         r = JSON.stringify(this.data);
+                      e = this.path.resolve(process.cwd(), this.dataFile),
+                      s = this.fs.existsSync(t),
+                      i = !s && this.fs.existsSync(e),
+                      r = JSON.stringify(this.data);
                     s ? this.fs.writeFileSync(t, r) : i ? this.fs.writeFileSync(e, r) : this.fs.writeFileSync(t, r)
                }
           }
@@ -604,7 +604,7 @@ function Env(t, e) {
                     if ("object" == typeof t) {
                          if (this.isLoon()) {
                               let e = t.openUrl || t.url || t["open-url"],
-                                   s = t.mediaUrl || t["media-url"];
+                                s = t.mediaUrl || t["media-url"];
                               return {
                                    openUrl: e,
                                    mediaUrl: s
@@ -612,7 +612,7 @@ function Env(t, e) {
                          }
                          if (this.isQuanX()) {
                               let e = t["open-url"] || t.url || t.openUrl,
-                                   s = t["media-url"] || t.mediaUrl;
+                                s = t["media-url"] || t.mediaUrl;
                               return {
                                    "open-url": e,
                                    "media-url": s
@@ -643,7 +643,7 @@ function Env(t, e) {
           }
           done(t = {}) {
                const e = (new Date).getTime(),
-                    s = (e - this.startTime) / 1e3;
+                 s = (e - this.startTime) / 1e3;
                this.log("", `🔔${this.name}, 结束! 🕛 ${s} 秒`), this.log(), (this.isSurge() || this.isQuanX() || this.isLoon()) && $done(t)
           }
      }(t, e)

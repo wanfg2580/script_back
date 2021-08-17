@@ -98,12 +98,12 @@ if ($.isNode() && process.env.jdJoyStealCoin) {
     }
   }
 })()
-    .catch((e) => {
-      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-    })
-    .finally(() => {
-      $.done();
-    })
+  .catch((e) => {
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+  })
+  .finally(() => {
+    $.done();
+  })
 async function jdJoySteal() {
   try {
     $.helpFood = 0;
@@ -291,7 +291,7 @@ function enterRoom() {
     const host = `draw.jdfcloud.com`;
     const reqSource = 'weapp';
     let opt = {
-      url: `//draw.jdfcloud.com/common/pet/enterRoom/h5?invitePin=&openId=&invokeKey=qRKHmL4sna8ZOP9F`,
+      url: `//draw.jdfcloud.com/common/pet/enterRoom/h5?invitePin=&openId=&invokeKey=ztmFUCxcPMNyUq0P`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -316,8 +316,8 @@ function enterRoom() {
 function getFriends(currentPage = '1') {
   return new Promise(resolve => {
     let opt = {
-      url: `//draw.jdfcloud.com//common/pet/api/getFriends?itemsPerPage=20&currentPage=${currentPage * 1}&invokeKey=qRKHmL4sna8ZOP9F`,
-      // url: `//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`,
+      url: `//draw.jdfcloud.com//common/pet/api/getFriends?itemsPerPage=20&currentPage=${currentPage * 1}&invokeKey=ztmFUCxcPMNyUq0P`,
+      // url: `//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5&invokeKey=ztmFUCxcPMNyUq0P`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -502,7 +502,7 @@ function getRandomFood(friendPin) {
 function getCoinChanges() {
   return new Promise(resolve => {
     let opt = {
-      url: `//jdjoy.jd.com/common/pet/getCoinChanges?changeDate=${Date.now()}&invokeKey=qRKHmL4sna8ZOP9F`,
+      url: `//jdjoy.jd.com/common/pet/getCoinChanges?changeDate=${Date.now()}&invokeKey=ztmFUCxcPMNyUq0P`,
       // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5",
       method: "GET",
       data: {},
@@ -643,7 +643,7 @@ function taskPostUrl(url, Host, reqSource) {
 }
 function taskUrl(functionId, friendPin) {
   let opt = {
-    url: `//jdjoy.jd.com/common/pet/${functionId}?friendPin=${encodeURI(friendPin)}&invokeKey=qRKHmL4sna8ZOP9F`,
+    url: `//jdjoy.jd.com/common/pet/${functionId}?friendPin=${encodeURI(friendPin)}&invokeKey=ztmFUCxcPMNyUq0P`,
     // url: `//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5`,
     method: "GET",
     data: {},
@@ -702,7 +702,7 @@ function taroRequest(e) {
     },
     "AesDecrypt": function AesDecrypt(e) {
       var n = a.enc.Hex.parse(e)
-          , t = a.enc.Base64.stringify(n);
+        , t = a.enc.Base64.stringify(n);
       return a.AES.decrypt(t, o, {
         "iv": r,
         "mode": a.mode.CBC,
@@ -729,9 +729,9 @@ function taroRequest(e) {
         n[t] = sortByLetter(e[t], n[t])
     } else
       !(e instanceof Array) && e instanceof Object ? (n = n || {},
-          Object.keys(e).sort().map(function(t) {
-            n[t] = sortByLetter(e[t], n[t])
-          })) : n = e;
+        Object.keys(e).sort().map(function(t) {
+          n[t] = sortByLetter(e[t], n[t])
+        })) : n = e;
     return n
   }
   const s = function isInWhiteAPI(e) {
@@ -760,33 +760,33 @@ function taroRequest(e) {
   }
 
   var n = e
-      , t = (n.header,
-      n.url);
+    , t = (n.header,
+    n.url);
   t += (t.indexOf("?") > -1 ? "&" : "?") + "reqSource=h5";
   var _a = function getTimeSign(e) {
     var n = e.url
-        , t = e.method
-        , a = void 0 === t ? "GET" : t
-        , i = e.data
-        , r = e.header
-        , m = void 0 === r ? {} : r
-        , p = a.toLowerCase()
-        , g = _o.keyCode
-        , f = m["content-type"] || m["Content-Type"] || ""
-        , h = ""
-        , u = +new Date();
+      , t = e.method
+      , a = void 0 === t ? "GET" : t
+      , i = e.data
+      , r = e.header
+      , m = void 0 === r ? {} : r
+      , p = a.toLowerCase()
+      , g = _o.keyCode
+      , f = m["content-type"] || m["Content-Type"] || ""
+      , h = ""
+      , u = +new Date();
     return h = "get" !== p &&
     ("post" !== p || "application/x-www-form-urlencoded" !== f.toLowerCase() && i && Object.keys(i).length) ?
-        _o.Md5encode(_o.Base64Encode(_o.AesEncrypt("" + JSON.stringify(c(i)))) + "_" + g + "_" + u) :
-        _o.Md5encode("_" + g + "_" + u),
+      _o.Md5encode(_o.Base64Encode(_o.AesEncrypt("" + JSON.stringify(c(i)))) + "_" + g + "_" + u) :
+      _o.Md5encode("_" + g + "_" + u),
     s(n) && (n = d(n, {
       "lks": h,
       "lkt": u
     }),
-        n = l(n)),
-        Object.assign(e, {
-          "url": n
-        })
+      n = l(n)),
+      Object.assign(e, {
+        "url": n
+      })
   }(e = Object.assign(e, {
     "url": t
   }));
