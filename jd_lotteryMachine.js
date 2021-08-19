@@ -325,11 +325,11 @@ function jsonParse(str) {
 
 //初始化
 function initial() {
-   merge = {
-     nickname: "",
-     enabled: true,
-     redPacket: {prizeDesc : "抽得|红包|元",number : true,fixed : 2},  //定义 动作|奖励名称|奖励单位   是否是数字
-     jdBeans: {prizeDesc : "抽得|京豆|个",number : true,fixed : 0}
+  merge = {
+    nickname: "",
+    enabled: true,
+    redPacket: {prizeDesc : "抽得|红包|元",number : true,fixed : 2},  //定义 动作|奖励名称|奖励单位   是否是数字
+    jdBeans: {prizeDesc : "抽得|京豆|个",number : true,fixed : 0}
   }
   for (let i in merge) {
     merge[i].success = 0;
