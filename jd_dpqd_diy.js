@@ -22,22 +22,22 @@ let shopname=''
 
 const token=[
 
-  '020E4A5B75AE493CDF3020628CA72FDE',//3天，10豆；5天，20豆；7天，35豆；
-  'ACD7EB42FB65AF1A447AEB329235DE04',//每日，3豆；15天，100豆；
-  '5BB2C6C6332AD842011240152F7550EB',//每日，6豆；7天，100豆；
-  '6C6B2702DDAAEDEBE5E68E41B6264CF6',//每日，5豆；7天，200积分；
-  'CDC56C42F64CA34677E5894F28AF4871',//每日，100分；1天，200分、2豆；2天，1000分、25-3券；
-  '2075567CC6ED0F30EAFFCF901F6C486D',//每日，2豆；10天，100豆；
-  'CAF5BA5BF6B8317E282FCBF9F5C00B0E',//每日，2豆；5天，10豆；10天，20豆；15天，25豆；
-  'A133DE5D8D1A5A612F49CBE1D9BCE7AA',//每日，2豆；20天，5元e卡；
-  'E9E4861F0B12E5E483C949C818E3EAB8',//每日，1豆；10天，20豆；20天，50豆；
-  '8FD67D1FD193B5C19C277B7406106EDD',//每日，5豆；7天，100分、50豆；
-  'A9F558F6789D649FEB6436A51D7A6059',//每日，10豆；3天，20分；7天100豆；
-  '83E9B38C310EB5D26657977EF8FECA0F',//7天，20积分；15天，30豆；
-  '7DE1E4B12326576BF7C5D347CC909451',//每日，10豆；7天，100豆；
-  '513B43DB672C8C7B0D975DB75328A131',//每日，5豆；26天，88豆；
-  '9BABD41E5674FD5791963D5366BEC634',//每日，1豆；5天，10豆；21天，100豆;
-  'EFFD0BF4069A8B6882A55FB07ACDA60F',//10天，30豆；20天，60豆；30天，100豆;
+'020E4A5B75AE493CDF3020628CA72FDE',//3天，10豆；5天，20豆；7天，35豆；
+'ACD7EB42FB65AF1A447AEB329235DE04',//每日，3豆；15天，100豆；
+'5BB2C6C6332AD842011240152F7550EB',//每日，6豆；7天，100豆；
+'6C6B2702DDAAEDEBE5E68E41B6264CF6',//每日，5豆；7天，200积分；
+'CDC56C42F64CA34677E5894F28AF4871',//每日，100分；1天，200分、2豆；2天，1000分、25-3券；
+'2075567CC6ED0F30EAFFCF901F6C486D',//每日，2豆；10天，100豆；
+'CAF5BA5BF6B8317E282FCBF9F5C00B0E',//每日，2豆；5天，10豆；10天，20豆；15天，25豆；
+'A133DE5D8D1A5A612F49CBE1D9BCE7AA',//每日，2豆；20天，5元e卡；
+'E9E4861F0B12E5E483C949C818E3EAB8',//每日，1豆；10天，20豆；20天，50豆；
+'8FD67D1FD193B5C19C277B7406106EDD',//每日，5豆；7天，100分、50豆；
+'A9F558F6789D649FEB6436A51D7A6059',//每日，10豆；3天，20分；7天100豆；
+'83E9B38C310EB5D26657977EF8FECA0F',//7天，20积分；15天，30豆；
+'7DE1E4B12326576BF7C5D347CC909451',//每日，10豆；7天，100豆；
+'513B43DB672C8C7B0D975DB75328A131',//每日，5豆；26天，88豆；
+'9BABD41E5674FD5791963D5366BEC634',//每日，1豆；5天，10豆；21天，100豆;
+'EFFD0BF4069A8B6882A55FB07ACDA60F',//10天，30豆；20天，60豆；30天，100豆;
 
 ]
 //IOS等用户直接用NobyDa的jd cookie
@@ -64,15 +64,15 @@ if ($.isNode()) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
+  
+	$.TokenLists = []
+  
+        $.innerTokenList = await getStoreTokee('https://zy.kejiwanjia.com/jd_dpqiandao.php');
+        //$.innerTokenList = token
+	
+	$.TokenLists.push(...$.TokenList,...$.innerTokenList);
 
-  $.TokenLists = []
-
-  $.innerTokenList = await getStoreTokee('https://zy.kejiwanjia.com/jd_dpqiandao.php');
-  //$.innerTokenList = token
-
-  $.TokenLists.push(...$.TokenList,...$.innerTokenList);
-
-
+	
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -92,24 +92,24 @@ if ($.isNode()) {
         continue
       }
       await babel_diy_zeus();
-      await showMsg()
+	  await showMsg()
       //if(i  <1 ) {await showMsg()}
     }
   }
 })()
-  .catch((e) => {
-    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-  })
-  .finally(() => {
-    $.done();
-  })
+    .catch((e) => {
+      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+    })
+    .finally(() => {
+      $.done();
+    })
 
 //开始店铺签到
 async function babel_diy_zeus(){
-
+	
   for (var j = 0; j < $.TokenLists.length; j++) {
-
-    await $.wait(3000);
+	  
+	await $.wait(3000);  
     num=j+1
     if ($.TokenLists[j]=='') {continue}
     await getvenderId($.TokenLists[j])
@@ -205,7 +205,7 @@ function getActivityInfo(token,venderId) {
         "accept-encoding": "gzip, deflate",
         "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
         "cookie": cookie,
-        "referer": `https://h5.m.jd.com/babelDiy/Zeus/2PAAf74aG3D61qvfKUM5dxUssJQ9/index.html?token=${token}&sceneval=2&jxsid=16178634353215523301&cu=true&utm_source=kong&utm_medium=jingfen&utm_campaign=t_2009753434_&utm_term=fa3f8f38c56f44e2b4bfc2f37bce9713`,
+         "referer": `https://h5.m.jd.com/babelDiy/Zeus/2PAAf74aG3D61qvfKUM5dxUssJQ9/index.html?token=${token}&sceneval=2&jxsid=16178634353215523301&cu=true&utm_source=kong&utm_medium=jingfen&utm_campaign=t_2009753434_&utm_term=fa3f8f38c56f44e2b4bfc2f37bce9713`,
         "User-Agent": `Mozilla/5.0 (Linux; U; Android 10; zh-cn; MI 8 Build/QKQ1.190828.002) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/79.0.3945.147 Mobile Safari/537.36 XiaoMi/MiuiBrowser/13.5.40`
       }
     }
@@ -290,10 +290,10 @@ function taskUrl(token,venderId) {
           console.log(`\n${$.name}: API查询请求失败 ‼️‼️`)
           $.logErr(err);
         } else {
-          //console.log(data)
-          data = JSON.parse(/{(.*)}/g.exec(data)[0])
-          console.log(`已签到：`+data.data.days+`天`)
-          message +=`已签到：`+data.data.days+`天\n`
+            //console.log(data)
+            data = JSON.parse(/{(.*)}/g.exec(data)[0])
+            console.log(`已签到：`+data.data.days+`天`)
+            message +=`已签到：`+data.data.days+`天\n`
         }
       } catch (e) {
         $.logErr(e, resp);
