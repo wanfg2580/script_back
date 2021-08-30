@@ -82,12 +82,12 @@ if ($.isNode()) {
         await notify.sendNotify(`${$.name}`, `${allMessage}`, { url: `https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean` })
     }
 })()
-    .catch((e) => {
-        $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-    })
-    .finally(() => {
-        $.done();
-    })
+  .catch((e) => {
+      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+  })
+  .finally(() => {
+      $.done();
+  })
 async function showMsg() {
     if ($.errorMsg) return
     //allMessage += `账号${$.index}：${$.nickName || $.UserName}\n今日收入：${$.todayIncomeBean}京豆 🐶\n昨日收入：${$.incomeBean}京豆 🐶\n昨日支出：${$.expenseBean}京豆 🐶\n当前京豆：${$.beanCount}(今日将过期${$.expirejingdou})京豆 🐶${$.message}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
@@ -630,24 +630,24 @@ function safeGet(data) {
 function cash() {
     return new Promise(resolve => {
         $.get(taskcashUrl('MyAssetsService.execute',
-            {"method": "userCashRecord", "data": {"channel": 1, "pageNum": 1, "pageSize": 20}}),
-            async (err, resp, data) => {
-                try {
-                    if (err) {
-                        console.log(`${JSON.stringify(err)}`)
-                        console.log(`${$.name} API请求失败，请检查网路重试`)
-                    } else {
-                        if (safeGet(data)) {
-                            data = JSON.parse(data);
-                            $.JDtotalcash = data.data.goldBalance ;
-                        }
-                    }
-                } catch (e) {
-                    $.logErr(e, resp)
-                } finally {
-                    resolve(data);
-                }
-            })
+          {"method": "userCashRecord", "data": {"channel": 1, "pageNum": 1, "pageSize": 20}}),
+          async (err, resp, data) => {
+              try {
+                  if (err) {
+                      console.log(`${JSON.stringify(err)}`)
+                      console.log(`${$.name} API请求失败，请检查网路重试`)
+                  } else {
+                      if (safeGet(data)) {
+                          data = JSON.parse(data);
+                          $.JDtotalcash = data.data.goldBalance ;
+                      }
+                  }
+              } catch (e) {
+                  $.logErr(e, resp)
+              } finally {
+                  resolve(data);
+              }
+          })
     })
 }
 
@@ -728,65 +728,65 @@ async function JxmcGetRequest() {
 // 惊喜工厂信息查询
 function getJxFactory() {
     return new Promise(async resolve => {
-            let infoMsg = "";
-            await $.get(jxTaskurl('userinfo/GetUserInfo', `pin=&sharePin=&shareType=&materialTuanPin=&materialTuanId=&source=`, '_time,materialTuanId,materialTuanPin,pin,sharePin,shareType,source,zone'), async (err, resp, data) => {
-                try {
-                    if (err) {
-                        $.jxFactoryInfo = "查询失败!";
-                        //console.log("jx工厂查询失败"  + err)
-                    } else {
-                        if (safeGet(data)) {
-                            data = JSON.parse(data);
-                            if (data['ret'] === 0) {
-                                data = data['data'];
-                                $.unActive = true;//标记是否开启了京喜活动或者选购了商品进行生产
-                                if (data.factoryList && data.productionList) {
-                                    const production = data.productionList[0];
-                                    const factory = data.factoryList[0];
-                                    //const productionStage = data.productionStage;
-                                    $.commodityDimId = production.commodityDimId;
-                                    // subTitle = data.user.pin;
-                                    await GetCommodityDetails();//获取已选购的商品信息
-                                    infoMsg = `${$.jxProductName} ,进度:${((production.investedElectric / production.needElectric) * 100).toFixed(2)}%`;
-                                    if (production.investedElectric >= production.needElectric) {
-                                        if (production['exchangeStatus'] === 1) {
-                                            infoMsg = `${$.productName} ,已经可兑换，请手动兑换`;
-                                        }
-                                        if (production['exchangeStatus'] === 3) {
-                                            if (new Date().getHours() === 9) {
-                                                infoMsg = `${$.productName} ,兑换已超时，请选择新商品进行制造`;
-                                            }
-                                        }
-                                        // await exchangeProNotify()
-                                    } else {
-                                        infoMsg += ` ,预计:${((production.needElectric - production.investedElectric) / (2 * 60 * 60 * 24)).toFixed(2)}天可兑换`
-                                    }
-                                    if (production.status === 3) {
-                                        infoMsg = "${$.productName} ,已经超时失效, 请选择新商品进行制造"
-                                    }
-                                } else {
-                                    $.unActive = false;//标记是否开启了京喜活动或者选购了商品进行生产
-                                    if (!data.factoryList) {
-                                        infoMsg = "当前未开始生产商品,请手动去京东APP->游戏与互动->查看更多->京喜工厂 开启活动"
-                                        // $.msg($.name, '【提示】', `京东账号${$.index}[${$.nickName}]京喜工厂活动未开始\n请手动去京东APP->游戏与互动->查看更多->京喜工厂 开启活动`);
-                                    } else if (data.factoryList && !data.productionList) {
-                                        infoMsg = "当前未开始生产商品,请手动去京东APP->游戏与互动->查看更多->京喜工厂 开启活动"
-                                    }
-                                }
-                            }
-                        } else {
-                            console.log(`GetUserInfo异常：${JSON.stringify(data)}`)
-                        }
-                    }
-                    $.jxFactoryInfo = infoMsg;
-                    // console.log(infoMsg);
-                } catch (e) {
-                    $.logErr(e, resp)
-                } finally {
-                    resolve();
-                }
-            })
-        }
+          let infoMsg = "";
+          await $.get(jxTaskurl('userinfo/GetUserInfo', `pin=&sharePin=&shareType=&materialTuanPin=&materialTuanId=&source=`, '_time,materialTuanId,materialTuanPin,pin,sharePin,shareType,source,zone'), async (err, resp, data) => {
+              try {
+                  if (err) {
+                      $.jxFactoryInfo = "查询失败!";
+                      //console.log("jx工厂查询失败"  + err)
+                  } else {
+                      if (safeGet(data)) {
+                          data = JSON.parse(data);
+                          if (data['ret'] === 0) {
+                              data = data['data'];
+                              $.unActive = true;//标记是否开启了京喜活动或者选购了商品进行生产
+                              if (data.factoryList && data.productionList) {
+                                  const production = data.productionList[0];
+                                  const factory = data.factoryList[0];
+                                  //const productionStage = data.productionStage;
+                                  $.commodityDimId = production.commodityDimId;
+                                  // subTitle = data.user.pin;
+                                  await GetCommodityDetails();//获取已选购的商品信息
+                                  infoMsg = `${$.jxProductName} ,进度:${((production.investedElectric / production.needElectric) * 100).toFixed(2)}%`;
+                                  if (production.investedElectric >= production.needElectric) {
+                                      if (production['exchangeStatus'] === 1) {
+                                          infoMsg = `${$.jxProductName} ,已经可兑换，请手动兑换`;
+                                      }
+                                      if (production['exchangeStatus'] === 3) {
+                                          if (new Date().getHours() === 9) {
+                                              infoMsg = `${$.jxProductName} ,兑换已超时，请选择新商品进行制造`;
+                                          }
+                                      }
+                                      // await exchangeProNotify()
+                                  } else {
+                                      infoMsg += ` ,预计:${((production.needElectric - production.investedElectric) / (2 * 60 * 60 * 24)).toFixed(2)}天可兑换`
+                                  }
+                                  if (production.status === 3) {
+                                      infoMsg = "${$.jxProductName} ,已经超时失效, 请选择新商品进行制造"
+                                  }
+                              } else {
+                                  $.unActive = false;//标记是否开启了京喜活动或者选购了商品进行生产
+                                  if (!data.factoryList) {
+                                      infoMsg = "当前未开始生产商品,请手动去京东APP->游戏与互动->查看更多->京喜工厂 开启活动"
+                                      // $.msg($.name, '【提示】', `京东账号${$.index}[${$.nickName}]京喜工厂活动未开始\n请手动去京东APP->游戏与互动->查看更多->京喜工厂 开启活动`);
+                                  } else if (data.factoryList && !data.productionList) {
+                                      infoMsg = "当前未开始生产商品,请手动去京东APP->游戏与互动->查看更多->京喜工厂 开启活动"
+                                  }
+                              }
+                          }
+                      } else {
+                          console.log(`GetUserInfo异常：${JSON.stringify(data)}`)
+                      }
+                  }
+                  $.jxFactoryInfo = infoMsg;
+                  // console.log(infoMsg);
+              } catch (e) {
+                  $.logErr(e, resp)
+              } finally {
+                  resolve();
+              }
+          })
+      }
     )
 }
 
@@ -945,18 +945,18 @@ function getGetRequest(type, url) {
 
 Date.prototype.Format = function (fmt) {
     var e,
-        n = this, d = fmt, l = {
-            "M+": n.getMonth() + 1,
-            "d+": n.getDate(),
-            "D+": n.getDate(),
-            "h+": n.getHours(),
-            "H+": n.getHours(),
-            "m+": n.getMinutes(),
-            "s+": n.getSeconds(),
-            "w+": n.getDay(),
-            "q+": Math.floor((n.getMonth() + 3) / 3),
-            "S+": n.getMilliseconds()
-        };
+      n = this, d = fmt, l = {
+          "M+": n.getMonth() + 1,
+          "d+": n.getDate(),
+          "D+": n.getDate(),
+          "h+": n.getHours(),
+          "H+": n.getHours(),
+          "m+": n.getMinutes(),
+          "s+": n.getSeconds(),
+          "w+": n.getDay(),
+          "q+": Math.floor((n.getMonth() + 3) / 3),
+          "S+": n.getMilliseconds()
+      };
     /(y+)/i.test(d) && (d = d.replace(RegExp.$1, "".concat(n.getFullYear()).substr(4 - RegExp.$1.length)));
     for (var k in l) {
         if (new RegExp("(".concat(k, ")")).test(d)) {
