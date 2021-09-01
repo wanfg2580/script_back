@@ -3,7 +3,8 @@
 搬运cui521大佬脚本，请勿外传！！！
 
 由LAzysheep更新
-cron 30 0,23 * * * jd_qpqd_diy.js, tag=店铺签到diy
+[Script]
+cron "30 0,23 * * *" jd_qpqd_diy.js, tag=店铺签到diy
 */
 const $ = new Env('店铺签到');
 
@@ -64,15 +65,15 @@ if ($.isNode()) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  
+
 	$.TokenLists = []
-  
+
         $.innerTokenList = await getStoreTokee('https://zy.kejiwanjia.com/jd_dpqiandao.php');
         //$.innerTokenList = token
-	
+
 	$.TokenLists.push(...$.TokenList,...$.innerTokenList);
 
-	
+
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -106,10 +107,10 @@ if ($.isNode()) {
 
 //开始店铺签到
 async function babel_diy_zeus(){
-	
+
   for (var j = 0; j < $.TokenLists.length; j++) {
-	  
-	await $.wait(3000);  
+
+	await $.wait(3000);
     num=j+1
     if ($.TokenLists[j]=='') {continue}
     await getvenderId($.TokenLists[j])

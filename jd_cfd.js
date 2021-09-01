@@ -1,7 +1,8 @@
 /*
   https://st.jingxi.com/fortune_island/index2.html
-
-  cron 18 0-23/2 * * * https://raw.githubusercontent.com/smiek2221/scripts/master/gua_wealth_island.js 财富大陆
+==============Loon==============
+[Script]
+cron "18 0-23/1 * * *" script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_wealth_island.js,tag=财富大陆
 
 */
 
