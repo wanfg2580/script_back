@@ -38,7 +38,7 @@ http-response ^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/api\/user\/addUser\?c
 http-request ^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/api\/user\/user\/detail\?openId= script-path=jd_joy_run.js, timeout=3600, tag=宠汪汪助力获取Token
 */
 const $ = new Env('宠汪汪赛跑');
-const zooFaker = require('./JDJRValidator_Pure');
+const zooFaker = require('./utils/JDJRValidator_Pure');
 $.get = zooFaker.injectToRequest2($.get.bind($));
 $.post = zooFaker.injectToRequest2($.post.bind($));
 //宠汪汪赛跑所需token，默认读取作者服务器的
@@ -114,8 +114,7 @@ async function main() {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  const readTokenRes = ''
-  // const readTokenRes = await readToken();
+  const readTokenRes = await readToken();
   if (readTokenRes && readTokenRes.code === 200) {
     $.LKYLToken = readTokenRes.data[0] || ($.isNode() ? (process.env.JOY_RUN_TOKEN ? process.env.JOY_RUN_TOKEN : jdJoyRunToken) : ($.getdata('jdJoyRunToken') || jdJoyRunToken));
   } else {
@@ -257,7 +256,7 @@ async function getToken() {
 }
 function readToken() {
   return new Promise(resolve => {
-    $.get({url: `http://share.turinglabs.net/api/v3/joy/query/1/`, 'timeout': 10000}, (err, resp, data) => {
+    $.get({url: `https://cdn.jdsign.cf/gettoken`,headers:{'Host':'jdsign.cf'}, 'timeout': 10000}, (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -609,7 +608,7 @@ function taroRequest(e) {
     },
     "AesDecrypt": function AesDecrypt(e) {
       var n = a.enc.Hex.parse(e)
-        , t = a.enc.Base64.stringify(n);
+          , t = a.enc.Base64.stringify(n);
       return a.AES.decrypt(t, o, {
         "iv": r,
         "mode": a.mode.CBC,
@@ -636,9 +635,9 @@ function taroRequest(e) {
         n[t] = sortByLetter(e[t], n[t])
     } else
       !(e instanceof Array) && e instanceof Object ? (n = n || {},
-        Object.keys(e).sort().map(function(t) {
-          n[t] = sortByLetter(e[t], n[t])
-        })) : n = e;
+          Object.keys(e).sort().map(function(t) {
+            n[t] = sortByLetter(e[t], n[t])
+          })) : n = e;
     return n
   }
   const s = function isInWhiteAPI(e) {
@@ -667,33 +666,33 @@ function taroRequest(e) {
   }
 
   var n = e
-    , t = (n.header,
-    n.url);
+      , t = (n.header,
+      n.url);
   t += (t.indexOf("?") > -1 ? "&" : "?") + "reqSource=h5";
   var _a = function getTimeSign(e) {
     var n = e.url
-      , t = e.method
-      , a = void 0 === t ? "GET" : t
-      , i = e.data
-      , r = e.header
-      , m = void 0 === r ? {} : r
-      , p = a.toLowerCase()
-      , g = _o.keyCode
-      , f = m["content-type"] || m["Content-Type"] || ""
-      , h = ""
-      , u = +new Date();
+        , t = e.method
+        , a = void 0 === t ? "GET" : t
+        , i = e.data
+        , r = e.header
+        , m = void 0 === r ? {} : r
+        , p = a.toLowerCase()
+        , g = _o.keyCode
+        , f = m["content-type"] || m["Content-Type"] || ""
+        , h = ""
+        , u = +new Date();
     return h = "get" !== p &&
     ("post" !== p || "application/x-www-form-urlencoded" !== f.toLowerCase() && i && Object.keys(i).length) ?
-      _o.Md5encode(_o.Base64Encode(_o.AesEncrypt("" + JSON.stringify(c(i)))) + "_" + g + "_" + u) :
-      _o.Md5encode("_" + g + "_" + u),
+        _o.Md5encode(_o.Base64Encode(_o.AesEncrypt("" + JSON.stringify(c(i)))) + "_" + g + "_" + u) :
+        _o.Md5encode("_" + g + "_" + u),
     s(n) && (n = d(n, {
       "lks": h,
       "lkt": u
     }),
-      n = l(n)),
-      Object.assign(e, {
-        "url": n
-      })
+        n = l(n)),
+        Object.assign(e, {
+          "url": n
+        })
   }(e = Object.assign(e, {
     "url": t
   }));
