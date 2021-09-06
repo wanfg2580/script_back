@@ -1,10 +1,5 @@
 /*
- * @Author: LXK9301 https://github.com/LXK9301
- * @Date: 2020-12-06 18:19:21
- * @Last Modified by: LXK9301
- * @Last Modified time: 2020-12-26 22:58:02
- */
-/*
+Last Modified time: 2020-12-26 22:58:02
 东东工厂，不是京喜工厂
 活动入口：京东APP首页-数码电器-东东工厂
 免费产生的电量(10秒1个电量，500个电量满，5000秒到上限不生产，算起来是84分钟达到上限)
@@ -17,18 +12,19 @@
 ============Quantumultx===============
 [task_local]
 #东东工厂
-10 * * * * https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdfactory.js, tag=东东工厂, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_factory.png, enabled=true
+10 * * * * jd_jdfactory.js, tag=东东工厂, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_factory.png, enabled=true
 
 ================Loon==============
 [Script]
-cron "10 * * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdfactory.js,tag=东东工厂
+cron "10 * * * *" script-path=jd_jdfactory.js,tag=东东工厂
 
 ===============Surge=================
-东东工厂 = type=cron,cronexp="10 * * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdfactory.js
+东东工厂 = type=cron,cronexp="10 * * * *",wake-system=1,timeout=3600,script-path=jd_jdfactory.js
 
 ============小火箭=========
-东东工厂 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdfactory.js, cronexpr="10 * * * *", timeout=3600, enable=true
- */const $ = new Env('东东工厂');
+东东工厂 = type=cron,script-path=jd_jdfactory.js, cronexpr="10 * * * *", timeout=3600, enable=true
+ */
+const $ = new Env('东东工厂');
 
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -48,8 +44,7 @@ if ($.isNode()) {
 }
 let wantProduct = ``;//心仪商品名称
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
-const inviteCodes = [`P04z54XCjVWnYaS5u2ak7ZCdan1Bdd2GGiWvC6_uERj`, 'P04z54XCjVWnYaS5m9cZ2ariXVJwHf0bgkG7Uo',
-  `T0225KkcRB8c_VODck-nl_8IdgCjVWnYaS5kRrbA`];
+const inviteCodes = ['T0159KUiH11Mq1bSKBoCjVWnYaS5kRrbA', 'T0225KkcRh9P9FbRKUygl_UJcgCjVWnYaS5kRrbA', 'T011tvV3SBcQ8VwCjVWnYaS5kRrbA', 'T0225KkcR0pM91aBIhmgxf9bcACjVWnYaS5kRrbA', 'T0205KkcEV9ThDGWdWGw0K5uCjVWnYaS5kRrbA', 'T0225KkcRktN8lyBdEj1kaQMdwCjVWnYaS5kRrbA', 'P04z54XCjVWnYaS5uCHk7RxfanmDaDzc6FquQ'];
 !(async () => {
   await requireConfig();
   if (!cookiesArr[0]) {
@@ -79,12 +74,12 @@ const inviteCodes = [`P04z54XCjVWnYaS5u2ak7ZCdan1Bdd2GGiWvC6_uERj`, 'P04z54XCjVW
     }
   }
 })()
-  .catch((e) => {
-    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-  })
-  .finally(() => {
-    $.done();
-  })
+    .catch((e) => {
+      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+    })
+    .finally(() => {
+      $.done();
+    })
 async function jdFactory() {
   try {
     await jdfactory_getHomeData();
@@ -622,7 +617,7 @@ function jdfactory_getHomeData() {
 function readShareCode() {
   console.log(`开始`)
   return new Promise(async resolve => {
-    $.get({url: `http://share.turinglabs.net/api/v3/ddfactory/query/${randomCount}/`, timeout: 10000}, (err, resp, data) => {
+    $.get({url: `https://cdn.nz.lu/api/ddfactory/${randomCount}`, headers:{'Host':'api.sharecode.ga'}, timeout: 10000}, (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
