@@ -41,9 +41,9 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3'
     return;
   }
   console.log('京喜领88元红包\n' +
-    '活动入口：京喜app-》我的-》京喜领88元红包\n' +
-    '助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力作者\n' +
-    '温馨提示：如提示助力火爆，可尝试寻找京东客服')
+      '活动入口：京喜app-》我的-》京喜领88元红包\n' +
+      '助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力作者\n' +
+      '温馨提示：如提示助力火爆，可尝试寻找京东客服')
   let res = []
   res = await getAuthorShareCode('https://raw.githubusercontent.com/Aaron-lv/updateTeam/master/shareCodes/jxhb.json')
   if (!res) {
@@ -83,7 +83,7 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3'
     $.canHelp = true;
     UA = UAInfo[$.UserName]
     for (let j = 0; j < $.packetIdArr.length && $.canHelp; j++) {
-      console.log(`【${$.UserName}】去助力【${$.packetIdArr[j].userName}}】邀请码：${$.packetIdArr[j].strUserPin}`);
+      console.log(`【${$.UserName}】去助力【${$.packetIdArr[j].userName}】邀请码：${$.packetIdArr[j].strUserPin}`);
       if ($.UserName === $.packetIdArr[j].userName) {
         console.log(`助力失败：不能助力自己`)
         continue
@@ -127,12 +127,12 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3'
     }
   }
 })()
-  .catch((e) => {
-    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-  })
-  .finally(() => {
-    $.done();
-  })
+    .catch((e) => {
+      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+    })
+    .finally(() => {
+      $.done();
+    })
 async function main() {
   await joinActive();
   await $.wait(2000)
