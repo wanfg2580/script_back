@@ -1,29 +1,24 @@
 /*
-领券中心签到
+东东世界
 
-@感谢 ddo 提供sign算法
-@感谢 匿名大佬 提供pin算法
-
-活动入口：领券中心
-更新时间：2021-08-23
 已支持IOS双京东账号,Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ============Quantumultx===============
 [task_local]
-#领券中心签到
-15 0 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_ccSign.js, tag=领券中心签到, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+#东东世界
+15 3,9 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_ddworld.js, tag=东东世界, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 
 ================Loon==============
 [Script]
-cron "15 0 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_ccSign.js,tag=领券中心签到
+cron "15 3,9 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_ddworld.js,tag=东东世界
 
 ===============Surge=================
-领券中心签到 = type=cron,cronexp="15 0 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_ccSign.js
+东东世界 = type=cron,cronexp="15 3,9 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_ddworld.js
 
 ============小火箭=========
-领券中心签到 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_ccSign.js, cronexpr="15 0 * * *", timeout=3600, enable=true
- */
-const $ = new Env('领券中心签到');
+东东世界 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_ddworld.js, cronexpr="15 3,9 * * *", timeout=3600, enable=true
+*/
+const $ = new Env('东东世界');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -38,8 +33,10 @@ if ($.isNode()) {
 } else {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
-const JD_API_HOST = 'https://api.m.jd.com/client.action';
+const JD_API_HOST = 'https://ddsj-dz.isvjcloud.com/dd-api';
 let allMessage = '';
+$.shareCodes = []
+let tokenInfo = {}, hotInfo = {}
 !(async () => {
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
@@ -63,8 +60,45 @@ let allMessage = '';
         }
         continue
       }
-      await jdSign()
+      $.hot = false
+      await jdWorld()
       await $.wait(2000)
+      tokenInfo[$.UserName] = $.access_token
+      hotInfo[$.UserName] = $.hot
+    }
+  }
+  let res = await getAuthorShareCode('https://raw.githubusercontent.com/Aaron-lv/updateTeam/master/shareCodes/ddworld.json')
+  if (!res) {
+    $.http.get({url: 'https://purge.jsdelivr.net/gh/Aaron-lv/updateTeam@master/shareCodes/ddworld.json'}).then((resp) => {}).catch((e) => console.log('刷新CDN异常', e));
+    await $.wait(1000)
+    res = await getAuthorShareCode('https://cdn.jsdelivr.net/gh/Aaron-lv/updateTeam@master/shareCodes/ddworld.json')
+  }
+  $.shareCodes = [...$.shareCodes, ...(res || [])]
+  for (let i = 0; i < cookiesArr.length; i++) {
+    cookie = cookiesArr[i];
+    $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+    $.access_token = tokenInfo[$.UserName]
+    $.canHelp = true
+    if (hotInfo[$.UserName]) continue
+    if ($.shareCodes && $.shareCodes.length) {
+      console.log(`\n自己账号内部循环互助\n`);
+      for (let j = 0; j < $.shareCodes.length && $.canHelp; j++) {
+        console.log(`账号${$.UserName} 去助力 ${$.shareCodes[j].use} 的助力码 ${$.shareCodes[j].code}`)
+        if ($.shareCodes[j].num === $.domax) {
+          console.log(`助力失败：您的好友助力已满`)
+          $.shareCodes.splice(j, 1)
+          j--
+          continue
+        }
+        if ($.UserName === $.shareCodes[j].use) {
+          console.log(`助力失败：不能助力自己`)
+          continue
+        }
+        $.success = false
+        await do_assist_task($.shareCodes[j].taskToken, $.shareCodes[j].code)
+        await $.wait(2000)
+        if ($.success) $.shareCodes[j].num++
+      }
     }
   }
 })()
@@ -75,44 +109,70 @@ let allMessage = '';
       $.done();
     })
 
-async function jdSign() {
-  await getCouponConfig()
+async function jdWorld() {
+  await getIsvToken()
+  await getIsvToken2()
+  await getUserInfo()
+  await get_user_info()
+  if ($.hot) return
+  await get_task()
 }
 
-async function getCouponConfig() {
-  let functionId = `getCouponConfig`
-  let body = escape(JSON.stringify({"childActivityUrl":"openapp.jdmobile://virtual?params={\"category\":\"jump\",\"des\":\"couponCenter\"}","incentiveShowTimes":0,"monitorRefer":"","monitorSource":"ccresource_android_index_config","pageClickKey":"Coupons_GetCenter","rewardShowTimes":0,"sourceFrom":"1"}))
-  let uuid = randomString(16)
-  let sign = await getSign(functionId, decodeURIComponent(body), uuid)
-  let url = `${JD_API_HOST}?functionId=${functionId}&client=android&clientVersion=10.1.2&uuid=${uuid}&${sign}`
+// 获得IsvToken
+async function getIsvToken() {
+  let body = `body=%7B%22to%22%3A%22https%3A%2F%2Fddsj-dz.isvjcloud.com%2Fdd-world%2Fload_app%2Fload_app.html%22%2C%22action%22%3A%22to%22%7D&client=apple&clientVersion=10.1.0&uuid=yzv1eikjigs4sg8v&st=1631949498731&sign=8733ea1f0244a2346af129512294fa09&sv=111`
   return new Promise(async resolve => {
-    $.post(taskUrl(url, body), async (err, resp, data) => {
+    $.post(jdUrl('genToken', body), async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${$.name} genToken API请求失败，请检查网路重试`)
+        } else {
+          if (safeGet(data)) {
+            data = JSON.parse(data);
+            $.isvToken = data['tokenKey']
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+  })
+}
+// 获得对应游戏的访问Token
+async function getIsvToken2() {
+  let body = `body=%7B%22id%22%3A%22%22%2C%22url%22%3A%22https%3A%2F%2Fddsj-dz.isvjcloud.com%22%7D&client=apple&clientVersion=10.1.0&uuid=b56r0is60bfo0x9n&st=1631949499685&sign=950339fc057b93ca9b9976d052f733a2&sv=111`
+  return new Promise(async resolve => {
+    $.post(jdUrl('isvObfuscator', body), async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${$.name} isvObfuscator API请求失败，请检查网路重试`)
+        } else {
+          if (safeGet(data)) {
+            data = JSON.parse(data);
+            $.token2 = data['token']
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+  })
+}
+async function getUserInfo() {
+  return new Promise(async resolve => {
+    $.post(taskPostUrl(`jd-user-info`, `token=${$.token2}&source=01`, `IsvToken=${$.isvToken}`), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} getCouponConfig API请求失败，请检查网路重试`)
+          console.log(`${$.name} getUserInfo API请求失败，请检查网路重试`)
         } else {
           if (data) {
             data = JSON.parse(data)
-            let functionId, body
-            if (data.result.couponConfig.signNecklaceDomain) {
-              if (data.result.couponConfig.signNecklaceDomain.roundData.ynSign === '1') {
-                console.log(`签到失败：今日已签到~`)
-              } else {
-                let pin = await getsecretPin($.UserName)
-                functionId = `ccSignInNecklace`
-                body = escape(JSON.stringify({"childActivityUrl":"openapp.jdmobile://virtual?params={\"category\":\"jump\",\"des\":\"couponCenter\"}","monitorRefer":"appClient","monitorSource":"cc_sign_android_index_config","pageClickKey":"Coupons_GetCenter","sessionId":"","signature":data.result.couponConfig.signNecklaceDomain.signature,"pin":pin,"verifyToken":""}))
-              }
-            } else {
-              if (data.result.couponConfig.signNewDomain.roundData.ynSign === '1') {
-                console.log(`签到失败：今日已签到~`)
-              } else {
-                let pin = await getsecretPin($.UserName)
-                functionId = `ccSignInNew`
-                body = escape(JSON.stringify({"childActivityUrl":"openapp.jdmobile://virtual?params={\"category\":\"jump\",\"des\":\"couponCenter\"}","monitorRefer":"appClient","monitorSource":"cc_sign_android_index_config","pageClickKey":"Coupons_GetCenter","pin":pin}))
-              }
-            }
-            if (functionId && body) await ccSign(functionId, body)
+            $.access_token = data.access_token
           }
         }
       } catch (e) {
@@ -123,23 +183,48 @@ async function getCouponConfig() {
     })
   })
 }
-async function ccSign(functionId, body) {
-  let uuid = randomString(16)
-  let sign = await getSign(functionId, decodeURIComponent(body), uuid)
-  let url = `${JD_API_HOST}?functionId=${functionId}&client=android&clientVersion=10.1.2&uuid=${uuid}&${sign}`
+
+function get_task() {
   return new Promise(async resolve => {
-    $.post(taskUrl(url, body), async (err, resp, data) => {
+    $.get(taskUrl(`get_task`), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} ccSign API请求失败，请检查网路重试`)
+          console.log(`${$.name} get_task API请求失败，请检查网路重试`)
         } else {
           if (data) {
             data = JSON.parse(data)
-            if (data.busiCode === '0') {
-              console.log(functionId === 'ccSignInNew' ? `签到成功：获得 ${data.result.signResult.signData.amount} 红包` : `签到成功：获得 ${data.result.signResult.signData.necklaceScore} 点点券，${data.result.signResult.signData.amount}`)
-            } else {
-              console.log(`签到失败：${data.message}`)
+            for (let key of Object.keys(data.result.taskVos)) {
+              let vo = data.result.taskVos[key]
+              if (vo.status === 1) {
+                if (!vo.assistTaskDetailVo) console.log(`去做【${vo.taskName}】`)
+                if (vo.simpleRecordInfoVo) {
+                  await do_task(vo.simpleRecordInfoVo.taskToken, vo.taskId, vo.taskType)
+                  await $.wait(2000)
+                } else if (vo.assistTaskDetailVo) {
+                  $.domax = vo.maxTimes
+                  $.shareCodes.push({
+                    'use': $.UserName,
+                    'taskToken': vo.assistTaskDetailVo.taskToken,
+                    'code': $.openid,
+                    'num': vo.times
+                  })
+                } else {
+                  let Vos = vo.browseShopVo || vo.shoppingActivityVos || vo.productInfoVos || []
+                  for (let key of Object.keys(Vos)) {
+                    let taskVo = Vos[key]
+                    taskName = taskVo.shopName || taskVo.title || taskVo.skuName
+                    if (taskVo.status === 1) {
+                      await do_task(taskVo.taskToken, vo.taskId, vo.taskType, taskName)
+                      await $.wait(2000)
+                    } else {
+                      console.log(`【${taskName}】已完成`)
+                    }
+                  }
+                }
+              } else {
+                console.log(`【${vo.taskName}】已完成`)
+              }
             }
           }
         }
@@ -151,70 +236,70 @@ async function ccSign(functionId, body) {
     })
   })
 }
-function getSign(functionid, body, uuid) {
-  return new Promise(async resolve => {
-    let data = {
-      "functionId":functionid,
-      "body":body,
-      "uuid":uuid,
-      "client":"android",
-      "clientVersion":"10.1.2"
-    }
-    let HostArr = ['jdsign.cf', 'signer.nz.lu']
-    let Host = HostArr[Math.floor((Math.random() * HostArr.length))]
-    let options = {
-      url: `https://cdn.nz.lu/ddo`,
-      body: JSON.stringify(data),
-      headers: {
-        Host,
-        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
-      },
-      timeout: 30 * 1000
-    }
-    $.post(options, (err, resp, data) => {
+function do_task(taskToken, task_id, task_type, task_name = '') {
+  let body = `taskToken=${taskToken}&task_id=${task_id}&task_type=${task_type}`
+  if (task_name) body = `${body}&task_name=${escape(task_name)}`
+  return new Promise(resolve => {
+    $.post(taskPostUrl(`do_task`, body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} getSign API请求失败，请检查网路重试`)
+          console.log(`${$.name} do_task API请求失败，请检查网路重试`)
         } else {
-
+          if (data) {
+            data = JSON.parse(data)
+            console.log(`完成成功：获得${data.score}金币`)
+          }
         }
       } catch (e) {
         $.logErr(e, resp)
       } finally {
-        resolve(data);
+        resolve();
       }
     })
   })
 }
-function getsecretPin(pin) {
-  return new Promise(async resolve => {
-    let data = {
-      "pt_pin": pin
-    }
-    let HostArr = ['jdsign.cf', 'signer.nz.lu']
-    let Host = HostArr[Math.floor((Math.random() * HostArr.length))]
-    let options = {
-      url: `https://cdn.nz.lu/pin`,
-      body: JSON.stringify(data),
-      headers: {
-        Host,
-        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
-      },
-      timeout: 30 * 1000
-    }
-    $.post(options, (err, resp, data) => {
+function get_user_info() {
+  return new Promise(resolve => {
+    $.get(taskUrl(`get_user_info`), (err, resp, data) => {
       try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} getsecretPin API请求失败，请检查网路重试`)
-        } else {
-
+        if (data) {
+          data = JSON.parse(data)
+          if (!data.status_code) {
+            console.log(`【京东账号${$.index}（${$.UserName}）的东东世界好友互助码】${data.openid}`)
+            $.openid = data.openid
+          } else if (data.status_code === 403) {
+            $.hot = true
+            console.log(`活动太火爆了，还是去买买买吧！`)
+          }
         }
       } catch (e) {
         $.logErr(e, resp)
       } finally {
-        resolve(data);
+        resolve();
+      }
+    })
+  })
+}
+function do_assist_task(taskToken, code) {
+  let body = `taskToken=${taskToken}&inviter_id=${code}`
+  return new Promise(resolve => {
+    $.post(taskPostUrl(`do_assist_task`, body), (err, resp, data) => {
+      try {
+        if (data) {
+          data = JSON.parse(data)
+          if (!data.status_code) {
+            console.log(`助力成功：获得${data.score}金币`)
+            $.success = true
+          } else if (data.status_code === 422) {
+            console.log(`助力失败：无助力次数`)
+            $.canHelp = false
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
       }
     })
   })
@@ -231,29 +316,87 @@ function showMsg() {
   })
 }
 
-function taskUrl(url, body) {
+function jdUrl(functionId, body) {
   return {
-    url,
-    body: `body=${body}`,
+    url: `https://api.m.jd.com/client.action?functionId=${functionId}`,
+    body: body,
     headers: {
-      "Host": "api.m.jd.com",
-      "Connection": "keep-alive",
-      "User-Agent": "okhttp/3.12.1;jdmall;android;version/10.1.2;build/89743;screen/1080x2030;os/9;network/wifi;",
-      "Accept": "*/*",
-      "Referer": "https://h5.m.jd.com/rn/42yjy8na6pFsq1cx9MJQ5aTgu3kX/index.html",
-      "Accept-Encoding": "gzip, deflate",
-      "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-      "Cookie": cookie,
-      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+      'Host': 'api.m.jd.com',
+      'accept': '*/*',
+      'user-agent': 'JD4iPhone/167490 (iPhone; iOS 14.2; Scale/3.00)',
+      'accept-language': 'zh-Hans-JP;q=1, en-JP;q=0.9, zh-Hant-TW;q=0.8, ja-JP;q=0.7, en-US;q=0.6',
+      'content-type': 'application/x-www-form-urlencoded',
+      'Cookie': cookie
     }
   }
 }
-function randomString(e) {
-  e = e || 32;
-  let t = "abcdefghijklmnopqrstuvwxyz0123456789", a = t.length, n = "";
-  for (let i = 0; i < e; i++)
-    n += t.charAt(Math.floor(Math.random() * a));
-  return n
+function taskUrl(functionId) {
+  return {
+    url: `${JD_API_HOST}/${functionId}`,
+    headers: {
+      "Host": "ddsj-dz.isvjcloud.com",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Accept-Encoding": "gzip, deflate, br",
+      "Cookie": $.access_token ? `dd-world=${$.access_token}` : '',
+      "Authorization": $.access_token ? `Bearer ${$.access_token}` : '',
+      "Connection": "keep-alive",
+      "Accept": "application/json, text/plain, */*",
+      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+      "Referer": "https://ddsj-dz.isvjcloud.com/dd-world/",
+      "Accept-Language": "zh-cn",
+    }
+  }
+}
+function taskPostUrl(functionId, body = '', IsvToken = '') {
+  return {
+    url: `${JD_API_HOST}/${functionId}`,
+    body,
+    headers: {
+      "Host": "ddsj-dz.isvjcloud.com",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Accept-Encoding": "gzip, deflate, br",
+      "Cookie": IsvToken ? IsvToken : $.access_token ? `dd-world=${$.access_token}` : '',
+      "Authorization": $.access_token ? `Bearer ${$.access_token}` : '',
+      "Connection": "keep-alive",
+      "Accept": "application/json, text/plain, */*",
+      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+      "Referer": "https://ddsj-dz.isvjcloud.com/dd-world/",
+      "Accept-Language": "zh-cn",
+    }
+  }
+}
+
+function getAuthorShareCode(url) {
+  return new Promise(async resolve => {
+    const options = {
+      url: `${url}?${new Date()}`, "timeout": 10000, headers: {
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }
+    };
+    if ($.isNode() && process.env.TG_PROXY_HOST && process.env.TG_PROXY_PORT) {
+      const tunnel = require("tunnel");
+      const agent = {
+        https: tunnel.httpsOverHttp({
+          proxy: {
+            host: process.env.TG_PROXY_HOST,
+            port: process.env.TG_PROXY_PORT * 1
+          }
+        })
+      }
+      Object.assign(options, { agent })
+    }
+    $.get(options, async (err, resp, data) => {
+      try {
+        resolve(JSON.parse(data))
+      } catch (e) {
+        // $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+    await $.wait(10000)
+    resolve();
+  })
 }
 
 function TotalBean() {
