@@ -18,7 +18,7 @@ const fs = require('fs')
 const download = require('download');
 let resultPath = "./result.txt";
 let JD_DailyBonusPath = "./JD_DailyBonus.js";
-let outPutUrl = './';
+let outPutUrl = './util';
 let NodeSet = 'CookieSet.json';
 let cookiesArr = [], cookie = '', allMessage = '', jrBodyArr = [], jrBody = '';
 
@@ -45,7 +45,7 @@ if ($.isNode()) {
   process.env.JD_BEAN_SIGN_NOTIFY_SIMPLE = process.env.JD_BEAN_SIGN_NOTIFY_SIMPLE ? process.env.JD_BEAN_SIGN_NOTIFY_SIMPLE : 'true';
   await requireConfig();
   // 下载最新代码
-  // await downFile();
+  await downFile();
   if (!await fs.existsSync(JD_DailyBonusPath)) {
     console.log(`\nJD_DailyBonus.js 文件不存在，停止执行${$.name}\n`);
     await notify.sendNotify($.name, `本次执行${$.name}失败，JD_DailyBonus.js 文件下载异常，详情请查看日志`)
