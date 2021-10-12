@@ -317,7 +317,7 @@ function notify() {
   //**ccwav Mod code
   const {
     getEnvs
-  } = require('./ql');
+  } = require('./');
   const envs = await getEnvs();
   var strck="";
   var strck2="";
