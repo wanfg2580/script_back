@@ -314,23 +314,44 @@ function notify() {
 }
 
 (async function ReadCookie() {
-  //**ccwav Mod code
-  const {
-    getEnvs
-  } = require('./');
-  const envs = await getEnvs();
-  var strck="";
-  var strck2="";
-  for (let i = 0; i < envs.length; i++) {
-    if (envs[i].status == 0) {
-      if (envs[i].value) {
-        strck = envs[i].value;
-        strck= (strck.match(/pt_pin=([^; ]+)(?=;?)/) && strck.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
-        strck2=decodeURIComponent(strck);
-        console.log("\n开始检测【京东账号"+(i+1)+"】"+strck2+`....\n`);
-        await all(envs[i].value, "");
+  const EnvInfo = $nobyda.isJSBox ? "JD_Cookie" : "CookieJD";
+  const EnvInfo2 = $nobyda.isJSBox ? "JD_Cookie2" : "CookieJD2";
+  const EnvInfo3 = $nobyda.isJSBox ? "JD_Cookies" : "CookiesJD";
+  const move = CookieMove($nobyda.read(EnvInfo) || Key, $nobyda.read(EnvInfo2) || DualKey, EnvInfo, EnvInfo2, EnvInfo3);
+  const cookieSet = $nobyda.read(EnvInfo3);
+  if (DeleteCookie) {
+    const write = $nobyda.write("", EnvInfo3);
+    throw new Error(`Cookie清除${write?`成功`:`失败`}, 请手动关闭脚本内"DeleteCookie"选项`);
+  } else if ($nobyda.isRequest) {
+    GetCookie()
+  } else if (Key || DualKey || (OtherKey || cookieSet || '[]') != '[]') {
+    if (($nobyda.isJSBox || $nobyda.isNode) && stop !== '0') $nobyda.write(stop, "JD_DailyBonusDelay");
+    out = parseInt($nobyda.read("JD_DailyBonusTimeOut")) || out;
+    stop = Wait($nobyda.read("JD_DailyBonusDelay"), true) || Wait(stop, true);
+    boxdis = $nobyda.read("JD_Crash_disable") === "false" || $nobyda.isNode || $nobyda.isJSBox ? false : boxdis;
+    LogDetails = $nobyda.read("JD_DailyBonusLog") === "true" || LogDetails;
+    ReDis = ReDis ? $nobyda.write("", "JD_DailyBonusDisables") : "";
+    $nobyda.num = 0;
+    if (Key) await all(Key);
+    if (DualKey && DualKey !== Key) await all(DualKey);
+    if ((OtherKey || cookieSet || '[]') != '[]') {
+      try {
+        OtherKey = checkFormat([...JSON.parse(OtherKey || '[]'), ...JSON.parse(cookieSet || '[]')]);
+        const updateSet = OtherKey.length ? $nobyda.write(JSON.stringify(OtherKey, null, 2), EnvInfo3) : '';
+        for (let i = 0; i < OtherKey.length; i++) {
+          const ck = OtherKey[i].cookie;
+          const jr = OtherKey[i].jrBody;
+          if (ck != Key && ck != DualKey) {
+            await all(ck, jr)
+          }
+        }
+      } catch (e) {
+        throw new Error(`账号Cookie读取失败, 请检查Json格式. \n${e.message}`)
       }
     }
+    $nobyda.time();
+  } else {
+    throw new Error('脚本终止, 未获取Cookie ‼️')
   }
 })().catch(e => {
   $nobyda.notify("京东签到", "", e.message || JSON.stringify(e))
