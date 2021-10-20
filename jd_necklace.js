@@ -62,26 +62,26 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     await notify.sendNotify(`${$.name}`, `${allMessage}`, { url: openUrl })
   }
 })()
-  .catch((e) => {
-    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-  })
-  .finally(() => {
-    $.done();
-  })
+    .catch((e) => {
+      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+    })
+    .finally(() => {
+      $.done();
+    })
 async function jd_necklace() {
   try {
-    await necklace_homePage();
-    await $.wait(2000)
-    await doTask();
-    await $.wait(2000)
-    await sign();
-    await $.wait(2000)
-    await necklace_homePage();
-    await receiveBubbles();
-    await necklace_homePage();
-    // // await necklace_exchangeGift($.totalScore);//自动兑换多少钱的无门槛红包，1000代表1元，默认兑换全部点点券
-    await showMsg();
-    await $.wait(2000)
+     await necklace_homePage();
+     await $.wait(2000)
+     await doTask();
+     await $.wait(2000)
+     await sign();
+     await $.wait(2000)
+     await necklace_homePage();
+     await receiveBubbles();
+     await necklace_homePage();
+     // // await necklace_exchangeGift($.totalScore);//自动兑换多少钱的无门槛红包，1000代表1元，默认兑换全部点点券
+     await showMsg();
+     await $.wait(2000)
   } catch (e) {
     $.logErr(e)
   }
@@ -414,18 +414,18 @@ function getCcTaskList(functionId, body, type = '3') {
   let url = `https://api.m.jd.com/client.action?functionId=${functionId}`
   return new Promise(resolve => {
     if (functionId === 'getCcTaskList') {
-
+      
     }
     if (functionId === 'reportCcTask'){
-
+      
     }
     if (functionId === 'reportSinkTask'){
       url += body
       body = ''
     }
     // if (type === '4' && functionId === 'reportCcTask'){
-    // url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1622193986049&sign=f5abd9fd7b9b8abaa25b34088f9e8a54&sv=102`
-    // body = `body=${escape(JSON.stringify(body))}`
+      // url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1622193986049&sign=f5abd9fd7b9b8abaa25b34088f9e8a54&sv=102`
+      // body = `body=${escape(JSON.stringify(body))}`
     // }
     const options = {
       url,
