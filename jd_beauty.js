@@ -478,8 +478,8 @@ async function mr() {
             if (benefit.type === 1) { //type 1 是京豆
               console.log(`benefit:${JSON.stringify(benefit)}`);
               if(benefit.description === "1 京豆" &&   //500颗京豆打包兑换
-                parseInt(benefit.day_exchange_count) < 10 &&
-                $.total > benefit.coins){
+                  parseInt(benefit.day_exchange_count) < 10 &&
+                  $.total > benefit.coins){
                 for (let i = benefit.day_exchange_count; i < 10; i++){
                   // console.log(`开始兑换`)
                   client.send(`{"msg":{"type":"action","args":{"benefit_id":${benefit.id}},"action":"to_exchange"}}`);
