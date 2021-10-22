@@ -178,32 +178,32 @@ function reward_query() {
 async function redPacket() {
   return new Promise(resolve => {
     $.get(taskGetUrl("spring_reward_receive",{"inviter":["HXZ60he5XxG8XNUF2LSrZg"][Math.floor((Math.random() * 1))], linkId}),
-        async (err, resp, data) => {
-          try {
-            if (err) {
-              console.log(`${JSON.stringify(err)}`)
-              console.log(`${$.name} API请求失败，请检查网路重试`)
-            } else {
-              if (safeGet(data)) {
-                data = JSON.parse(data);
-                if (data.code === 0) {
-                  if (data.data.received.prizeType !== 1) {
-                    message += `获得${data.data.received.prizeDesc}\n`
-                    console.log(`获得${data.data.received.prizeDesc}`)
-                  } else {
-                    console.log("获得优惠券")
-                  }
+      async (err, resp, data) => {
+        try {
+          if (err) {
+            console.log(`${JSON.stringify(err)}`)
+            console.log(`${$.name} API请求失败，请检查网路重试`)
+          } else {
+            if (safeGet(data)) {
+              data = JSON.parse(data);
+              if (data.code === 0) {
+                if (data.data.received.prizeType !== 1) {
+                  message += `获得${data.data.received.prizeDesc}\n`
+                  console.log(`获得${data.data.received.prizeDesc}`)
                 } else {
-                  console.log(data.errMsg)
+                  console.log("获得优惠券")
                 }
+              } else {
+                console.log(data.errMsg)
               }
             }
-          } catch (e) {
-            $.logErr(e, resp)
-          } finally {
-            resolve(data);
           }
-        })
+        } catch (e) {
+          $.logErr(e, resp)
+        } finally {
+          resolve(data);
+        }
+      })
   })
 }
 
@@ -396,9 +396,8 @@ function cashOut(id,poolBaseId,prizeGroupId,prizeBaseId,) {
 function invite() {
   let t = +new Date()
   let inviterId = [
-    "5V7vHE23qh2EkdBHXRFDuA==",
-	"4AVQao+eH8Q8kvmXnWmkG8ef/fNr5fdejnD9+9Ugbec="
-  ][Math.floor((Math.random() * 2))]
+    "5V7vHE23qh2EkdBHXRFDuA=="
+  ][Math.floor((Math.random() * 1))]
   var headers = {
     'Host': 'api.m.jd.com',
     'accept': 'application/json, text/plain, */*',
