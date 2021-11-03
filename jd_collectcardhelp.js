@@ -126,7 +126,7 @@ function red() {
                 console.log(`\n\n发起助力红包 失败：${data.data.result}`)
               }
             } else {
-              console.log(`\n\n发起助力红包 失败：${data.data}`)
+              console.log(`\n\n发起助力红包 失败：${JSON.stringify(data)}`)
             }
 
           } else {
