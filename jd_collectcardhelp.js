@@ -56,7 +56,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     $.canHelp = true;
     $.groupId  = [...new Set($.groupId )];
-    
+
     if (cookiesArr && cookiesArr.length >= 2) {
       console.log(`\n\n自己账号内部互助`);
       for (let j = 0; j < $.groupId .length && $.canHelp; j++) {
@@ -118,12 +118,17 @@ function red() {
         } else {
           data = JSON.parse(data);
           if (data && data.data ) {
-            if (data.data.result.groupId) {
-              console.log(`\n\n发起助力红包 成功：红包ID ${data.data.result.groupId}`)
-              $.groupId .push(data.data.result.groupId);
+            if (data.data.result) {
+              if (data.data.result.groupId) {
+                console.log(`\n\n发起助力红包 成功：红包ID ${data.data.result.groupId}`)
+                $.groupId .push(data.data.result.groupId);
+              } else {
+                console.log(`\n\n发起助力红包 失败：${data.data.result}`)
+              }
             } else {
-              console.log(`\n\n发起助力红包 失败：${data.data.result}`)
+              console.log(`\n\n发起助力红包 失败：${data.data}`)
             }
+
           } else {
             console.log(`发起助力红包 失败：${JSON.stringify(data)}`)
           }
