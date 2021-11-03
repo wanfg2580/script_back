@@ -84,7 +84,7 @@ if ($.isNode()) {
             fcwbinviterArr.push(fcwbinviters[item])
         }
     })
-    console.log(`共${fcwbinviteCodeArr.length}个邀请码`)    
+    console.log(`共${fcwbinviteCodeArr.length}个邀请码`)
     for (let i = 0; i < cookiesArr.length; i++) {
         if (!cookiesArr[i]) {
             continue
@@ -220,7 +220,7 @@ function wb(round, rowIdx, colIdx) {
                         data = JSON.parse(data);
                         if (data.success == true) {
                             console.log(`挖到${data.data.chunk.value}`)
-                            // console.log(`export fcwbinviter='${data.data.markedPin}'`)  
+                            // console.log(`export fcwbinviter='${data.data.markedPin}'`)
                         } else if (data.success == false) {
                             console.log(data.errMsg)
                         }
@@ -239,7 +239,7 @@ function home() {
     return new Promise((resolve) => {
         let body = { "linkId": "SS55rTBOHtnLCm3n9UMk7Q" }
         $.get(taskurl('happyDigHome', body), async (err, resp, data) => {
-            //console.log(data)  
+            //console.log(data)
             try {
                 if (err) {
                     console.log(`${JSON.stringify(err)}`)
@@ -252,7 +252,7 @@ function home() {
                             console.log('第' + curRound + '关')
                         }
                         // console.log(`请前往环境变量添加下方变量：'`)
-                        console.log(`fcwbinviteCode='${data.data.inviteCode}'`)
+                        // console.log(`fcwbinviteCode='${data.data.inviteCode}'`)
                         fcwbinviteCodeArr.push(data.data.inviteCode)
                         console.log(`fcwbinviter='${data.data.markedPin}'`)
                         fcwbinviterArr.push(data.data.markedPin)
