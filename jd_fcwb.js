@@ -251,6 +251,7 @@ function home() {
                             curRound = data.data.curRound
                             console.log('第' + curRound + '关')
                         }
+                        console.log(data)
                         // console.log(`请前往环境变量添加下方变量：'`)
                         // console.log(`fcwbinviteCode='${data.data.inviteCode}'`)
                         fcwbinviteCodeArr.push(data.data.inviteCode)
