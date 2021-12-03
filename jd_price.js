@@ -1,4 +1,4 @@
-p/*
+/*
 京东保价
 
 已支持IOS双京东账号,Node.js支持N个京东账号
@@ -61,7 +61,8 @@ const JD_API_HOST = 'https://api.m.jd.com/';
       }
       await price()
       if (i != cookiesArr.length - 1) {
-        await $.wait(20000)
+        await $.wait(2000)
+        await jstoken();
       }
     }
   }
