@@ -1,5 +1,6 @@
 /**
-cron 0 0,3 * * * jd_babel_sign.js
+通天塔签到共建,签到类cron自行设置.
+cron 33 1,12 * * * jd_babel_sign.js
 入口：主页-秒杀-狂撒三亿京豆
 TG频道：https://t.me/sheeplost
 */

@@ -172,8 +172,8 @@ async function cfd() {
 
     console.log('')
     //卖贝壳
-    // await $.wait(2000)
-    // await querystorageroom('1')
+    await $.wait(2000)
+    await querystorageroom('1')
 
     //升级建筑
     await $.wait(2000)
@@ -479,7 +479,7 @@ async function mermaidOper(strStoryId, dwType, ddwTriggerDay) {
                 console.log(`昨日解救美人鱼领奖成功：获得${data.Data.Prize.strPrizeName}\n`)
               } else {
                 console.log(`昨日解救美人鱼领奖失败：${data.sErrMsg}\n`)
-              }             
+              }
               break
             default:
               break
@@ -1314,7 +1314,7 @@ function doTask(taskId, type = 1, bizCodeXx) {
     let bizCode = `jxbfd`;
     if (type === 2) bizCode = `jxbfddch`;
     if (type === 3) bizCode = `jxbfdprop`;
-    if (bizCodeXx) bizCode = bizCodeXx 
+    if (bizCodeXx) bizCode = bizCodeXx
     $.get(taskListUrl(`DoTask`, `taskId=${taskId}`, bizCode), (err, resp, data) => {
       try {
         if (err) {
