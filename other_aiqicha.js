@@ -41,7 +41,7 @@ function get(api, method, data) {
 async function getaskList() {
     let tres = await get("usercenter/checkTaskStatusAjax", "get")
     let obj = tres.data
-    if(tres.status ==0){  
+    if(tres.status ==0){
     Object.keys(obj).forEach(function(key) {
         if (oo[key]) {
             let task = obj[key]
@@ -52,7 +52,7 @@ async function getaskList() {
             if (task.count != task.totalcount) taskList.push(task)
         }
     });
-}    
+}
     console.log(`共 ${alltaskList.length}任务 已完成 ${ytaskList.length} 任务 可做 ${taskList.length}任务 ${claimList.length}任务可领取奖励`)
 }
 
@@ -64,14 +64,14 @@ async function dotask(taskList){
                 await get(`usercenter/userSignAjax`, "get")
                 break
             case "CX10001": //每日登陆
-                console.log("开始任务：" + oo[o.title])                
+                console.log("开始任务：" + oo[o.title])
                 break
-            case "CX11001": //查询企业 
+            case "CX11001": //查询企业
                 console.log("开始任务：" + oo[o.title])
                 await get(`s/getHeadBrandAndPersonAjax?q=${encodeURI(rand())}`, "get")
                 await sleep(500)
                 break
-            case "CX11002": //查询老板 
+            case "CX11002": //查询老板
                 console.log("开始任务：" + oo[o.title])
                 await get(`person/relevantPersonalAjax?page=1&q=${encodeURI(rand())}&size=10`, "get")
                 await sleep(500)
@@ -109,7 +109,7 @@ async function dotask(taskList){
                 await get(`relations/findrelationsAjax?from=e07a8ef1409bff3987f1b28d118ff826&to=6f5966de4af2eb29085ffbcc9cc0116a&pathNum=10`, "get")
                 await sleep(500)
                 break
-            case "CX11010": //批量查询 
+            case "CX11010": //批量查询
                 console.log("开始任务：" + oo[o.title])
                 await get(`batchquery/show?exportkey=xlTM-TogKuTwFXlQeIXL0-ZSYg3hsic*l8GeygZ33JY5yKM7wIuRZJ9YNE*8CciQoAU5UjsmI-hdmd`, "get")
                 await sleep(500)
@@ -128,7 +128,7 @@ async function dotask(taskList){
                 await sleep(500)
                 break
             case "CX12005": //分享好友
-                console.log("开始任务：" + oo[o.title])                
+                console.log("开始任务：" + oo[o.title])
                 let shres = await get(`usercenter/getShareUrlAjax`, "get")
                 uid = shres.data.match(/uid=(.+)/)
                 if(uid){
@@ -137,11 +137,11 @@ async function dotask(taskList){
                 let t = Date.now()
                 headers["referer"] =  "https://"+shres.data+"&VNK="+t
                 headers["Zx-Open-Url"] = "https://"+shres.data+"&VNK="+t
-                await get(`m/?uid=${uid}`,"get")                
-                await get(`m/getuserinfoAjax?uid=${uid}`,"get")                 
+                await get(`m/?uid=${uid}`,"get")
+                await get(`m/getuserinfoAjax?uid=${uid}`,"get")
                 headers.cookie = aqcookie
                 await sleep(500)
-               } 
+               }
                 break
             case "CX12007": //高级搜索
                 console.log("开始任务：" + oo[o.title])
@@ -162,7 +162,7 @@ async function dotask(taskList){
 }
 
 async function aqc() {
-    msg = "【爱企查】：" 
+    msg = "【爱企查】："
     console.log("爱企查每日任务开始")
     if (config.aiqicha.cookie) {
     console.log("爱企查cookie数量："+config.aiqicha.cookie.length)
@@ -172,7 +172,7 @@ async function aqc() {
         ytaskList = []
         taskList = []
         claimList = []
-        alltaskList = []        
+        alltaskList = []
         console.log("账号"+(a+1)+"开始")
         let logininfo = await get("m/getuserinfoAjax", "get")
         if (logininfo.data.isLogin == 1) {
@@ -193,12 +193,12 @@ async function aqc() {
         } else {
             msg = "cookie已失效"
         }
-       } 
-    } else { 
-        msg += "请填写百度爱企查cookies(同百度贴吧"     
+       }
+    } else {
+        msg += "请填写百度爱企查cookies(同百度贴吧"
     }
     console.log(msg)
     return msg
 }
 module.exports = aqc
-//aqc()
+aqc()
