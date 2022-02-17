@@ -3,6 +3,7 @@
 批量查询任务需手动抓包查询之后的exportkey 并替换 见118行
 */
 const axios = require("axios")
+const $ = new Env('爱企查');
 var sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const headers = {
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Safari/537.36",
@@ -18,6 +19,20 @@ let i = Math.floor((Math.random()*key.length))
 return key[i]
 }
 let oo = {CX10002:"每日签到",CX10001:"每日登陆",CX11001:"查询企业",CX11002:"查询老板",CX11003:"查询老赖",CX11004:"查询商标",CX11005:"查询地图",CX11006:"浏览新闻",CX11007:"浏览监控日报",CX11009:"查询关系",CX11010:"批量查询",CX12001:"添加监控",CX12002:"添加关注",CX12005:"分享任务",CX12006:"邀请任务",CX12007:"高级搜索",CX12008:"高级筛选"}
+
+let Cookies = [
+]
+// 判断环境变量里面是否有京东ck
+if (process.env.aqcCookies) {
+    if (process.env.aqcCookies.indexOf('&') > -1) {
+        Cookies = process.env.aqcCookies.split('&');
+    } else if (process.env.aqcCookies.indexOf('\n') > -1) {
+        Cookies = process.env.aqcCookies.split('\n');
+    } else {
+        Cookies = [process.env.aqcCookies];
+    }
+}
+
 function get(api, method, data) {
     return new Promise(async (resolve) => {
         try {
@@ -164,8 +179,9 @@ async function dotask(taskList){
 async function aqc() {
     msg = "【爱企查】："
     console.log("爱企查每日任务开始")
-    if (config.aiqicha.cookie) {
-    console.log("爱企查cookie数量："+config.aiqicha.cookie.length)
+
+    if (Cookies) {
+    console.log("爱企查cookie数量：" + Cookies.length)
     for(a=0;a<config.aiqicha.cookie.length;a++){
         aqcookie = config.aiqicha.cookie[a]
         headers.cookie = aqcookie
