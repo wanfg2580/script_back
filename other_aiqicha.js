@@ -181,8 +181,8 @@ async function aqc() {
 
     if (Cookies) {
     console.log("爱企查cookie数量：" + Cookies.length)
-    for(a=0;a<config.aiqicha.cookie.length;a++){
-        aqcookie = config.aiqicha.cookie[a]
+    for(a=0;a<Cookies.length;a++){
+        aqcookie = Cookies[a]
         headers.cookie = aqcookie
         ytaskList = []
         taskList = []
