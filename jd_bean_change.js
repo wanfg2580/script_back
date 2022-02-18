@@ -75,13 +75,14 @@ RemainMessage += '【其他】京喜红包只能在京喜使用,其他同理';
 let WP_APP_TOKEN_ONE = "";
 
 let TempBaipiao = "";
-if ($.isNode() && process.env.WP_APP_TOKEN_ONE) {
-	WP_APP_TOKEN_ONE = process.env.WP_APP_TOKEN_ONE;
-}
+
 
 let doExJxBeans ="false";
 let time = new Date().getHours();
 if ($.isNode()) {
+	if (process.env.WP_APP_TOKEN_ONE) {		
+		WP_APP_TOKEN_ONE = process.env.WP_APP_TOKEN_ONE;
+	}
 	if(process.env.BEANCHANGE_ExJxBeans=="true"){
 		if (time >= 17){ 
 			console.log(`检测到设定了临期京豆转换喜豆...`);
@@ -91,6 +92,11 @@ if ($.isNode()) {
 		}
 	}
 }
+if(WP_APP_TOKEN_ONE)
+	console.log(`检测到已配置Wxpusher的Token，启用一对一推送...`);
+else
+	console.log(`检测到未配置Wxpusher的Token，禁用一对一推送...`);
+		
 if ($.isNode() && process.env.BEANCHANGE_PERSENT) {
 	intPerSent = parseInt(process.env.BEANCHANGE_PERSENT);
 	console.log(`检测到设定了分段通知:` + intPerSent);
@@ -119,18 +125,18 @@ if ($.isNode() && process.env.BEANCHANGE_USERGP4) {
 	//EnableMonth = process.env.BEANCHANGE_ENABLEMONTH;
 //}
 
+if ($.isNode() && process.env.BEANCHANGE_SUBNOTIFY) {	
+	strSubNotify=process.env.BEANCHANGE_SUBNOTIFY;
+	strSubNotify+="\n";
+	console.log(`检测到预览置顶内容,将在一对一推送的预览显示...\n`);	
+}
+
 if ($.isNode() && process.env.BEANCHANGE_ALLNOTIFY) {	
 	strAllNotify=process.env.BEANCHANGE_ALLNOTIFY;
 	console.log(`检测到设定了公告,将在推送信息中置顶显示...`);
 	strAllNotify = `【✨✨✨✨公告✨✨✨✨】\n`+strAllNotify;
 	console.log(strAllNotify+"\n");
 	strAllNotify +=`\n🎏🎏🎏🎏🎏🎏🎏🎏🎏🎏🎏🎏🎏`
-}
-
-if ($.isNode() && process.env.BEANCHANGE_SUBNOTIFY) {	
-	strSubNotify=process.env.BEANCHANGE_SUBNOTIFY;
-	strSubNotify+="\n";
-	console.log(`检测到预览置顶内容,将在一对一推送的预览显示...\n`);	
 }
 
 
@@ -1129,22 +1135,21 @@ async function Monthbean() {
 
 async function jdCash() {
 	let functionId = "cash_homePage";
-	let body = "%7B%7D";
-	let uuid = randomString(16);
+	let body = {};	  
 	console.log(`正在获取领现金任务签名...`);
 	isSignError = false;
-	let sign = await getSign(functionId, decodeURIComponent(body), uuid)
+	let sign = await getSign(functionId, body);
 		if (isSignError) {
 			console.log(`领现金任务签名获取失败,等待2秒后再次尝试...`)
 			await $.wait(2 * 1000);
 			isSignError = false;
-			sign = await getSign(functionId, decodeURIComponent(body), uuid);
+			sign =await getSign(functionId, body);
 		}
 		if (isSignError) {
 			console.log(`领现金任务签名获取失败,等待2秒后再次尝试...`)
 			await $.wait(2 * 1000);
 			isSignError = false;
-			sign = await getSign(functionId, decodeURIComponent(body), uuid);
+			sign = await getSign(functionId, body);
 		}
 		if (!isSignError) {
 			console.log(`领现金任务签名获取成功...`)
@@ -1153,9 +1158,8 @@ async function jdCash() {
 			$.jdCash = 0;
 			return
 		}
-		let url = `${JD_API_HOST}?functionId=${functionId}&build=167774&client=apple&clientVersion=10.1.0&uuid=${uuid}&${sign}`
 		return new Promise((resolve) => {
-			$.post(apptaskUrl(url, body), async(err, resp, data) => {
+			$.post(apptaskUrl(functionId, sign), async (err, resp, data) => {
 				try {
 					if (err) {
 						console.log(`${JSON.stringify(err)}`)
@@ -1164,7 +1168,7 @@ async function jdCash() {
 						if (safeGet(data)) {
 							data = JSON.parse(data);
 							if (data.code === 0 && data.data.result) {
-								$.jdCash = data.data.result.totalMoney || 0;
+								$.jdCash = data.data.result.totalMoney || 0;								
 								return
 							}
 						}
@@ -1178,57 +1182,56 @@ async function jdCash() {
 			})
 		})
 }
-function apptaskUrl(url, body) {
-	return {
-		url,
-		body: `body=${body}`,
-		headers: {
-			'Cookie': cookie,
-			'Host': 'api.m.jd.com',
-			'Connection': 'keep-alive',
-			'Content-Type': 'application/x-www-form-urlencoded',
-			'Referer': '',
-			'User-Agent': 'JD4iPhone/167774 (iPhone; iOS 14.7.1; Scale/3.00)',
-			'Accept-Language': 'zh-Hans-CN;q=1',
-			'Accept-Encoding': 'gzip, deflate, br',
-		}
-	}
+function apptaskUrl(functionId = "", body = "") {
+  return {
+    url: `${JD_API_HOST}?functionId=${functionId}`,
+    body,
+    headers: {
+      'Cookie': cookie,
+      'Host': 'api.m.jd.com',
+      'Connection': 'keep-alive',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Referer': '',
+      'User-Agent': 'JD4iPhone/167774 (iPhone; iOS 14.7.1; Scale/3.00)',
+      'Accept-Language': 'zh-Hans-CN;q=1',
+      'Accept-Encoding': 'gzip, deflate, br',
+    }
+  }
 }
-function getSign(functionid, body, uuid) {
-	return new Promise(async resolve => {
-		let data = {
-			"functionId": functionid,
-			"body": body,
-			"uuid": uuid,
-			"client": "apple",
-			"clientVersion": "10.1.0"
-		}
-		let HostArr = ['jdsign.cf', 'signer.nz.lu']
-		let Host = HostArr[Math.floor((Math.random() * HostArr.length))]
-			let options = {
-			url: `https://cdn.nz.lu/ddo`,
-			body: JSON.stringify(data),
-			headers: {
-				Host,
-				"User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
-			},
-			timeout: 15000
-		}
-		$.post(options, (err, resp, data) => {
-			try {
-				if (err) {
-					console.log(`${JSON.stringify(err)}`);
-					isSignError = true;
-					//console.log(`${$.name} getSign API请求失败，请检查网路重试`)
-				} else {}
-			} catch (e) {
-				$.logErr(e, resp)
-			}
-			finally {
-				resolve(data);
-			}
-		})
-	})
+function getSign(functionId, body) {
+  return new Promise(async resolve => {
+    let data = {
+      functionId,
+      body: JSON.stringify(body),
+      "client":"apple",
+      "clientVersion":"10.3.0"
+    }
+    let HostArr = ['jdsign.cf', 'signer.nz.lu']
+    let Host = HostArr[Math.floor((Math.random() * HostArr.length))]
+    let options = {
+      url: `https://cdn.nz.lu/ddo`,
+      body: JSON.stringify(data),
+      headers: {
+        Host,
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      },
+      timeout: 30 * 1000
+    }
+    $.post(options, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(JSON.stringify(err))
+          console.log(`${$.name} getSign API请求失败，请检查网路重试`)
+        } else {
+
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+  })
 }
 function TotalBean() {
 	return new Promise(async resolve => {
