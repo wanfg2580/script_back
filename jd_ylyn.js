@@ -509,15 +509,7 @@ function draw() {
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
           data = JSON.parse(data);
-          if ($.isNode())
-            for (let ck of resp['headers']['set-cookie']) {
-              cookie = `${initCookie}; ${ck.split(";")[0]};`
-            }
-          else {
-            for (let ck of resp['headers']['Set-Cookie'].split(',')) {
-              cookie = `${initCookie}; ${ck.split(";")[0]};`
-            }
-          }
+          LZ_TOKEN_VALUE = resp['headers']['set-cookie'].filter(row => row.indexOf("LZ_TOKEN_VALUE") !== -1)[0].split(";")[0]
           if (data.result) {
             if (Object.keys(data.data).length == 0) {
               console.log("抽奖成功,恭喜你抽了个寂寞： ")
