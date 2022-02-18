@@ -93,7 +93,7 @@ await hotinfo()
 }
 
 if ($.isNode() && allMessage) {
-        await notify.sendNotify(`文旅看点`, `${allMessage}` )
+        // await notify.sendNotify(`文旅看点`, `${allMessage}` )
     }
       }
   }

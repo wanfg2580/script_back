@@ -70,7 +70,7 @@ $.message = ''
       }
     }
   }
-  message() //通知
+  // message() //通知
 })()
   .catch((e) => $.logErr(e))
   .finally(() => $.done())
