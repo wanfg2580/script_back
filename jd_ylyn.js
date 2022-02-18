@@ -448,9 +448,9 @@ function feedCow() {
               console.log(`老牛等级:${data.data.level}\n下一等级还需吃奶:${data.data.score * 0.1}\n剩余奶滴:${data.data.score2 * 0.1}`)
             }
           } else {
-            // if (data.errorMessage.indexOf("长大") !== -1) {
-            //   msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n 已完成，请及时领取`)
-            // }
+            if (data.errorMessage.indexOf("长大") !== -1) {
+              msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n 已完成，请及时领取`)
+            }
             console.log(data.errorMessage)
           }
         }
