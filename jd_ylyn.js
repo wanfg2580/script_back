@@ -94,7 +94,7 @@ $.shareuuid = "7eaf779f13f64e2cbb2b1a55fd1de09f" //
         for (let i = 0; i < $.cs; i++) {
           sleep(500)
           var newVar = await feedCow();
-          if (!newVar1.result) {
+          if (!newVar.result) {
             break
           }
         }
