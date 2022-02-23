@@ -3,7 +3,7 @@
 '''
 感谢Curtin提供的其他脚本供我参考
 感谢aburd ch大佬的指导
-项目名称:jd_health_plant.py
+项目名称:xF_jd_health_plant.py
 Author: 一风一扬
 功能：健康社区-种植园自动任务
 Date: 2022-1-4
@@ -127,35 +127,9 @@ except:
 #######################################################################
 
 
-if "plant_cookie" in os.environ:
-    if len (os.environ["plant_cookie"]) == 1:
-        is_ck = int(os.environ["plant_cookie"])
-        cookie1 = os.environ["JD_COOKIE"].split('&')
-        cookie = cookie1[is_ck-1]
-        printT ("已获取并使用Env环境cookie")
-    elif len (os.environ["plant_cookie"]) > 1:
-        cookies1 = []
-        cookies1 = os.environ["JD_COOKIE"]
-        cookies1 = cookies1.split ('&')
-        is_ck = os.environ["plant_cookie"].split('&')
-        for i in is_ck:
-            cookies.append(cookies1[int(i)-1])
-        printT ("已获取并使用Env环境plant_cookies")
-else:
-    if cookie == '':
-        printT ("变量plant_cookie未填写")
-        exit (0)
-
-if "charge_targe_id" in os.environ:
-    if len (os.environ["charge_targe_id"]) > 8:
-        charge_targe_ids = os.environ["charge_targe_id"]
-        charge_targe_ids = charge_targe_ids.split ('&')
-    else:
-        charge_targe_id = os.environ["charge_targe_id"]
-        printT (f"已获取并使用Env环境 charge_targe_id={charge_targe_id}")
-else:
-    printT("变量charge_targe_id未填写，无法充能")
-
+cookies1 = []
+cookies1 = os.environ["JD_COOKIE"]
+cookies = cookies1.split ('&')
 
 
 def userAgent():
@@ -272,7 +246,7 @@ def get_ck(token,sid_ck,account):
         result = response.json ()
         # print(result)
         access_token = result['token']
-        print(access_token)
+        # print(access_token)
         return access_token
     except Exception as e:
         msg("账号【{0}】获取ck失败，cookie过期".format(account))
@@ -299,7 +273,7 @@ def get_Authorization(access_token,account):
         # print(data)
         response = requests.post (url=url, verify=False, headers=headers,data=data)
         result = response.json ()
-        print(result)
+        # print(result)
         access_token = result['access_token']
         access_token = r"Bearer " + access_token
         # print(access_token)
@@ -332,11 +306,15 @@ def get_planted_info(cookies,sid,account):
         try:
             name = result['plant'][f'{i+1}']['data']['name']
             planted_id = result['plant'][f'{i+1}']['data']['id']
-            print(f"账号{account}所种植的",f"【{name}】","充能ID为:",planted_id)
+            print(f"【账号{account}】所种植的",f"【{name}】","充能ID为:",planted_id)
             name_list.append(name)
             planted_id_list.append(planted_id)
+            global charge_targe_id
+            charge_targe_id=str(planted_id)
+            break
         except Exception as e:
             pass
+    print('\n\n')
 
 
 #获取早睡打卡
@@ -468,13 +446,13 @@ def do_task(cookies,taskName,taskId,taskToken,sid,account):
         res = requests.post(url=url1, verify=False, headers=headers,data=data.encode())
         # print(res.status_code)
         if res.status_code == 200:
-            msg("账号【{0}】正在执行任务，请稍等10秒".format(account))
+            msg("正在执行任务，请稍等10秒")
             time.sleep(10)
             response = requests.post(url=url, verify=False, headers=headers,data=data.encode())  #data中有汉字，需要encode为utf-8
             result = response.json()
             print(result)
             score = result['score']
-            msg ("账号【{0}】执行任务【{1}】成功，获取【{2}】能量".format (account, taskName,score))
+            msg ("执行任务【{0}】成功，获取【{1}】能量".format (taskName,score))
     except Exception as e:
         print(e)
 
@@ -503,13 +481,16 @@ def do_task2(cookies,taskName,taskId,taskToken,sid,account):
         result = response.json()
         # print(result)
         score = result['score']
-        msg ("账号【{0}】执行任务【{1}】成功，获取【{2}】能量".format (account, taskName,score))
+        msg ("执行任务【{0}】成功，获取【{1}】能量".format (taskName,score))
     except Exception as e:
         print(e)
 
 
 #充能
 def charge(charge_targe_id,cookies,sid,account):
+    if len(charge_targe_id)==0:
+        msg("账号【{0}】未种植".format(account))
+        return
     try:
         url = 'https://xinruismzd-isv.isvjcloud.com/api/add_growth_value'
         headers = {
@@ -531,10 +512,10 @@ def charge(charge_targe_id,cookies,sid,account):
         for i in range(10):
             response = requests.post(url=url, verify=False, headers=headers,data=data.encode())  #data中有汉字，需要encode为utf-8
             result = response.json()
-            # print(result)
+            print(result)
             user_coins = result['user_coins']   #剩余能量
             coins = result['plant_info']['coins']   #消耗能量
-            msg ("账号【{0}】充能成功，消耗【{1}】能量，剩余能量【{2}】".format (account, coins,user_coins))
+            msg ("充能成功，消耗【{0}】能量，剩余能量【{1}】".format (coins,user_coins))
             time.sleep(2)
 
     except Exception as e:
@@ -550,6 +531,7 @@ def start():
         nowtime = datetime.datetime.now ().strftime ('%Y-%m-%d %H:%M:%S.%f8')
         if cookie != '':
             account = setName (cookie)
+            msg ("★★★★★正在账号{}的任务★★★★★".format (account))
             access_token = get_ck(cookie,sid_ck,account)
             cookie = get_Authorization (access_token, account)
             get_planted_info (cookie, sid,account)
@@ -566,14 +548,11 @@ def start():
                     do_task2 (cookie, taskName, taskId, i, sid,account)
                 charge(charge_targe_id,cookie,sid, account)
         elif cookies != '':
-            for cookie, charge_targe_id in zip (cookies, charge_targe_ids):
-                account = setName (cookie)
-                access_token = get_ck (cookie, sid_ck, account)
-                cookie = get_Authorization (access_token, account)
-                get_planted_info (cookie, sid,account)
-            for cookie,charge_targe_id in zip(cookies,charge_targe_ids):
+            for cookie in cookies:
                 try:
                     account = setName (cookie)
+                    msg ("★★★★★正在账号{}的任务★★★★★".format (account))
+                    charge_targe_id=''
                     access_token = get_ck (cookie, sid_ck,account)
                     cookie = get_Authorization (access_token, account)
                     get_planted_info (cookie,sid,account)
@@ -587,9 +566,10 @@ def start():
                         taskName, taskId, taskToken_list = get_task2 (cookie,sid, account)
                         for i in taskToken_list:
                             do_task2 (cookie, taskName, taskId, i, sid,account)
-                    charge (charge_targe_id, cookie,sid, account)
+
                 except Exception as e:
                     pass
+                charge (charge_targe_id, cookie, sid, account)
         else:
             printT("请检查变量plant_cookie是否已填写")
 
