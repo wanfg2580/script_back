@@ -11,17 +11,17 @@
 =================================Quantumultx=========================
 [task_local]
 #东东萌宠
-30 5,18 * * * jd_pet_help.js, tag=东东萌宠, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdmc.png, enabled=true
+30 5,20 * * * jd_pet_help.js, tag=东东萌宠, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdmc.png, enabled=true
 
 =================================Loon===================================
 [Script]
-cron "30 5,18 * * *" script-path=jd_pet_help.js,tag=东东萌宠
+cron "30 5,20 * * *" script-path=jd_pet_help.js,tag=东东萌宠
 
 ===================================Surge================================
-东东萌宠 = type=cron,cronexp="30 5,18 * * *",wake-system=1,timeout=3600,script-path=jd_pet_help.js
+东东萌宠 = type=cron,cronexp="30 5,20 * * *",wake-system=1,timeout=3600,script-path=jd_pet_help.js
 
 ====================================小火箭=============================
-东东萌宠 = type=cron,script-path=jd_pet_help.js, cronexpr="30 5,18 * * *", timeout=3600, enable=true
+东东萌宠 = type=cron,script-path=jd_pet_help.js, cronexpr="30 5,20 * * *", timeout=3600, enable=true
 
  */
 const $ = new Env('东东萌宠内部互助');
@@ -48,7 +48,7 @@ if ($.isNode()) {
 
 let NowHour = new Date().getHours();
 let llhelp=true;
-
+let lnrun = 0;
 console.log(`共${cookiesArr.length}个京东账号\n`);
 
 !(async() => {
@@ -85,7 +85,7 @@ console.log(`共${cookiesArr.length}个京东账号\n`);
 				taskInfoKey = [];
 				option = {};
 				await GetShareCode();
-				await $.wait(2 * 1000);
+				await $.wait(3 * 1000);
 			}
 		}
 		console.log('\n互助码收集完毕，开始执行内部助力...\n');
@@ -115,8 +115,13 @@ console.log(`共${cookiesArr.length}个京东账号\n`);
             goodsUrl = '';
             taskInfoKey = [];
             option = {};
-            await jdPet();
-			await $.wait(30 * 1000);
+            lnrun++;
+			await jdPet();
+			if (lnrun == 3) {
+              console.log(`\n【访问接口次数达到3次，休息一分钟.....】\n`);
+              await $.wait(60 * 1000);
+              lnrun = 0;
+			}
         }
     }
     if ($.isNode() && allMessage && $.ctrTemp) {
@@ -142,11 +147,11 @@ async function jdPet() {
                 return
             }
             if (!$.petInfo.goodsInfo) {
-                $.msg($.name, '', `【提示】京东账号${$.index}${$.nickName || $.UserName}\n暂未选购新的商品`, {
-                    "open-url": "openapp.jdmoble://"
-                });
+                //$.msg($.name, '', `【提示】京东账号${$.index}${$.nickName || $.UserName}\n暂未选购新的商品`, {
+                //    "open-url": "openapp.jdmoble://"
+                //});
                 if ($.isNode())
-                    await notify.sendNotify(`${$.name} - ${$.index} - ${$.nickName || $.UserName}`, `【提示】京东账号${$.index}${$.nickName || $.UserName}\n暂未选购新的商品`);
+                    //await notify.sendNotify(`${$.name} - ${$.index} - ${$.nickName || $.UserName}`, `【提示】京东账号${$.index}${$.nickName || $.UserName}\n暂未选购新的商品`);
                 return
             }
             goodsUrl = $.petInfo.goodsInfo && $.petInfo.goodsInfo.goodsUrl;
@@ -154,19 +159,19 @@ async function jdPet() {
             // console.log(`初始化萌宠信息完成: ${JSON.stringify(petInfo)}`);
             if ($.petInfo.petStatus === 5) {
                 await slaveHelp(); //可以兑换而没有去兑换,也能继续助力好友
-                option['open-url'] = "openApp.jdMobile://";
-                $.msg($.name, ``, `【京东账号${$.index}】${$.nickName || $.UserName}\n【提醒⏰】${$.petInfo.goodsInfo.goodsName}已可领取\n请去京东APP或微信小程序查看\n点击弹窗即达`, option);
-                if ($.isNode()) {
-                    await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName || $.UserName}奖品已可领取`, `京东账号${$.index} ${$.nickName || $.UserName}\n${$.petInfo.goodsInfo.goodsName}已可领取`);
-                }
+                //option['open-url'] = "openApp.jdMobile://";
+                //$.msg($.name, ``, `【京东账号${$.index}】${$.nickName || $.UserName}\n【提醒⏰】${$.petInfo.goodsInfo.goodsName}已可领取\n请去京东APP或微信小程序查看\n点击弹窗即达`, option);
+                //if ($.isNode()) {
+                    //await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName || $.UserName}奖品已可领取`, `京东账号${$.index} ${$.nickName || $.UserName}\n${$.petInfo.goodsInfo.goodsName}已可领取`);
+                //}
                 return
             } else if ($.petInfo.petStatus === 6) {
                 await slaveHelp(); //已领取红包,但未领养新的,也能继续助力好友
-                option['open-url'] = "openApp.jdMobile://";
-                $.msg($.name, ``, `【京东账号${$.index}】${$.nickName || $.UserName}\n【提醒⏰】已领取红包,但未继续领养新的物品\n请去京东APP或微信小程序查看\n点击弹窗即达`, option);
-                if ($.isNode()) {
-                    await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName || $.UserName}奖品已可领取`, `京东账号${$.index} ${$.nickName || $.UserName}\n已领取红包,但未继续领养新的物品`);
-                }
+                //option['open-url'] = "openApp.jdMobile://";
+                //$.msg($.name, ``, `【京东账号${$.index}】${$.nickName || $.UserName}\n【提醒⏰】已领取红包,但未继续领养新的物品\n请去京东APP或微信小程序查看\n点击弹窗即达`, option);
+                //if ($.isNode()) {
+                    //await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName || $.UserName}奖品已可领取`, `京东账号${$.index} ${$.nickName || $.UserName}\n已领取红包,但未继续领养新的物品`);
+                //}
                 return
             }
             //console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${$.petInfo.shareCode}\n`);
@@ -178,8 +183,9 @@ async function jdPet() {
             $.taskInfo = $.taskInit.result;
 			if (llhelp){
 				await slaveHelp(); //助力好友
+				await $.wait(10 * 1000);
 			}
-            await showMsg();
+            //await showMsg();
             
         } else if (initPetTownRes.code === '0') {
             console.log(`初始化萌宠失败:  ${initPetTownRes.message}`);
@@ -188,7 +194,7 @@ async function jdPet() {
         $.logErr(e)
         const errMsg = `京东账号${$.index} ${$.nickName || $.UserName}\n任务执行异常，请检查执行日志 ‼️‼️`;
         if ($.isNode())
-            await notify.sendNotify(`${$.name}`, errMsg);
+            //await notify.sendNotify(`${$.name}`, errMsg);
         $.msg($.name, '', `${errMsg}`)
     }
 }
@@ -450,7 +456,7 @@ function TotalBean() {
 }
 // 请求
 async function request(function_id, body = {}) {
-    await $.wait(3000); //歇口气儿, 不然会报操作频繁
+    await $.wait(5000); //歇口气儿, 不然会报操作频繁
     return new Promise((resolve, reject) => {
         $.post(taskUrl(function_id, body), (err, resp, data) => {
             try {
