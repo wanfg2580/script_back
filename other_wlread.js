@@ -2,6 +2,7 @@
 下载地址：
 http://wlqkrda.ccdy.cn/a69359bfdecc0bacc039d37e56fb2103
 邀请码：10015380
+https://wlkdapi.zhongchuanjukan.com/XX
 ==========
 青龙变量
 ==========
