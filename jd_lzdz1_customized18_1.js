@@ -1,7 +1,7 @@
 /*
-早鸟焕春 大牌惠聚
+型男精英 随心而动
 */
-const $ = new Env("早鸟焕春 大牌惠聚");
+const $ = new Env("型男精英 随心而动");
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 const notify = $.isNode() ? require("./sendNotify") : "";
 let cookiesArr = [], cookie = "", message = "";
@@ -57,19 +57,19 @@ if ($.isNode()) {
       $.ADID = getUUID("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", 1);
       $.UUID = getUUID("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
       authorCodeList = [
-        '116e7210cd8e434680736d56e9c3da97',
-        '88f0c57b6eb7440b91ea5cd63861b30f',
-        '3234ec3533c24b5289bdd5b75f898e4e',
-        'b1f0903668484ab282729de9eeac53fe',
-        '00a292e9c70e493ca9c36bc25ffbc738',
+        '671f58b0e1ae44f68154b2b3ee104d1e',
+        '3d49aaaf206f43918db9285e09c20b54',
+        '4d67eec71b684cb8a49f37e4cabeefa0',
+        // 'b6f55acd1e3348ec84cef8c53d20b41c',
+        // '431e80b3d2cc485d92cd505fb04712a1'
       ];
       // $.authorCode = authorCodeList[random(0, authorCodeList.length)];
       $.authorCode = ownCode ? ownCode : authorCodeList[random(0, authorCodeList.length)]
       $.authorNum = `${random(1000000, 9999999)}`;
       $.randomCode = random(1000000, 9999999);
-      $.activityId = "dz3fb7e0f64f21afa7ff66d3daf15b";
-      $.activityShopId = "1000004065";
-      $.activityUrl = `https://lzdz1-isv.isvjcloud.com/dingzhi/april/springUnion3/activity/${$.authorNum}?activityId=${$.activityId}&shareUuid=${encodeURIComponent($.authorCode)}&adsource=null&shareuserid4minipg=null&shopid=undefined&lng=00.000000&lat=00.000000&sid=&un_area=`;
+      $.activityId = "dz934e1f764aa2accb14bd217c55ca";
+      $.activityShopId = "48034";
+      $.activityUrl = `https://lzdz1-isv.isvjcloud.com/dingzhi/april/manGod/activity/${$.authorNum}?activityId=${$.activityId}&shareUuid=${encodeURIComponent($.authorCode)}&adsource=null&shareuserid4minipg=null&shopid=undefined&lng=00.000000&lat=00.000000&sid=&un_area=`;
       await member();
       await $.wait(1000);
       if ($.bean > 0) {
@@ -108,16 +108,16 @@ async function member() {
       await $.wait(1000);
       await task("wxActionCommon/getUserInfo", `pin=${encodeURIComponent($.secretPin)}`, 1);
       if ($.index === 1) {
-        await task("april/springUnion3/activityContent", `activityId=${$.activityId}&pin=${encodeURIComponent($.secretPin)}&pinImg=&nick=${encodeURIComponent($.pin)}&cjyxPin=&cjhyPin=&shareUuid=${encodeURIComponent($.authorCode)}`, 0, 1);
+        await task("april/manGod/activityContent", `activityId=${$.activityId}&pin=${encodeURIComponent($.secretPin)}&pinImg=&nick=${encodeURIComponent($.pin)}&cjyxPin=&cjhyPin=&shareUuid=${encodeURIComponent($.authorCode)}`, 0, 1);
       } else {
-        await task("april/springUnion3/activityContent", `activityId=${$.activityId}&pin=${encodeURIComponent($.secretPin)}&pinImg=&nick=${encodeURIComponent($.pin)}&cjyxPin=&cjhyPin=&shareUuid=${encodeURIComponent($.authorCode)}`);
+        await task("april/manGod/activityContent", `activityId=${$.activityId}&pin=${encodeURIComponent($.secretPin)}&pinImg=&nick=${encodeURIComponent($.pin)}&cjyxPin=&cjhyPin=&shareUuid=${encodeURIComponent($.authorCode)}`);
       }
       $.log("关注店铺");
-      await task("april/springUnion3/saveTask", `activityId=${$.activityId}&actorUuid=${encodeURIComponent($.actorUuid)}&pin=${encodeURIComponent($.secretPin)}&taskType=23&taskValue=23&shareUuid=${encodeURIComponent($.authorCode)}`);
+      await task("april/manGod/saveTask", `activityId=${$.activityId}&actorUuid=${encodeURIComponent($.actorUuid)}&pin=${encodeURIComponent($.secretPin)}&taskType=23&taskValue=23&shareUuid=${encodeURIComponent($.authorCode)}`);
       await $.wait(1000);
       await task("taskact/common/drawContent", `activityId=${$.activityId}&pin=${encodeURIComponent($.secretPin)}`);
       await $.wait(1000);
-      await task("april/springUnion3/initOpenCard", `pin=${encodeURIComponent($.secretPin)}&activityId=${$.activityId}&shareUuid=${encodeURIComponent($.authorCode)}`);
+      await task("april/manGod/initOpenCard", `pin=${encodeURIComponent($.secretPin)}&activityId=${$.activityId}&shareUuid=${encodeURIComponent($.authorCode)}`);
       $.log("加入店铺会员");
       if ($.openCardList) {
         for (const vo of $.openCardList) {
@@ -136,7 +136,7 @@ async function member() {
         $.log("没有获取到对应的任务。\n");
       }
       await $.wait(1000);
-      await task("april/springUnion3/initOpenCard", `pin=${encodeURIComponent($.secretPin)}&activityId=${$.activityId}&shareUuid=${encodeURIComponent($.authorCode)}`);
+      await task("april/manGod/initOpenCard", `pin=${encodeURIComponent($.secretPin)}&activityId=${$.activityId}&shareUuid=${encodeURIComponent($.authorCode)}`);
       console.log("去助力 -> " + $.authorCode);
       // await task("linkgame/assist/status", `activityId=${$.activityId}&pin=${encodeURIComponent($.secretPin)}&shareUuid=${$.authorCode}`);
       // await task("linkgame/assist", `activityId=${$.activityId}&pin=${encodeURIComponent($.secretPin)}&shareUuid=${$.authorCode}`);
@@ -158,7 +158,7 @@ async function member() {
       // await getToken();
       await $.wait(2000)
       // await task('linkgame/draw/record', `activityId=${$.activityId}&actorUuid=${$.actorUuid}&pin=${encodeURIComponent($.secretPin)}`);
-      await task('april/springUnion3/draw', `activityId=${$.activityId}&pin=${encodeURIComponent($.secretPin)}`);
+      await task('april/manGod/draw', `activityId=${$.activityId}&pin=${encodeURIComponent($.secretPin)}`);
     }
   }
 }
@@ -182,7 +182,7 @@ function task(function_id, body, isCommon = 0, own = 0) {
                   break;
                 case "wxActionCommon/getUserInfo":
                   break;
-                case "april/springUnion3/activityContent":
+                case "april/manGod/activityContent":
                   if (!data.data.hasEnd) {
                     $.log(`开启【${data.data.activityName}】活动`);
                     $.log("-------------------");
@@ -195,12 +195,12 @@ function task(function_id, body, isCommon = 0, own = 0) {
                     $.log("活动已经结束");
                   }
                   break;
-                case "april/springUnion3/initOpenCard":
+                case "april/manGod/initOpenCard":
                   $.openCardList = data.data.openInfo;
                   $.openCardStatus = data.data.allOpenCard;
                   // console.log(data)
                   break;
-                case "april/springUnion3/saveTask":
+                case "april/manGod/saveTask":
                   console.log(data);
                   break;
                 case "linkgame/sign":
@@ -220,7 +220,7 @@ function task(function_id, body, isCommon = 0, own = 0) {
                 case "interaction/write/writePersonInfo":
                   console.log(data);
                   break;
-                case "april/springUnion3/draw":
+                case "april/manGod/draw":
                   console.log(data);
                   break;
                 case "linkgame/draw/record":

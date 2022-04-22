@@ -18,14 +18,15 @@ let min: number[] = [0.02, 0.12, 0.3, 0.4, 0.6, 0.7, 0.8, 1, 1.2, 2, 3.6], log: 
   cookiesArr = await requireConfig(false)
   cookiesArr = cookiesArr.slice(0, 1)
   await join()
-  await getShareCodeSelf()
   await help()
 
-  cookiesArr = cookiesArr.slice(1, 9)
-  await join()
+  cookiesArr = await requireConfig(false)
+  cookiesArr = cookiesArr.slice(0, 9)
+  if (new Date().getHours() !== 6)
+    await join()
   await getShareCodeSelf()
   await help()
-  // await open(true)
+  await open(1)
 })()
 
 async function join() {
@@ -34,7 +35,7 @@ async function join() {
       cookie = value
       UserName = decodeURIComponent(cookie.match(/pt_pin=([^;]*)/)![1])
       console.log(`\n开始【京东账号${index + 1}】${UserName}\n`)
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 3; i++) {
         try {
           log = await getLog()
           res = await api('h5launch', {followShop: 0, random: log.match(/"random":"(\d+)"/)[1], log: log.match(/"log":"(.*)"/)[1], sceneid: 'JLHBhPageh5'})
@@ -65,7 +66,7 @@ async function getShareCodeSelf(one: boolean = false) {
         UserName = decodeURIComponent(cookie.match(/pt_pin=([^;]*)/)![1])
         console.log(`\n开始【京东账号${index + 1}】${UserName}\n`)
         res = await api('h5activityIndex', {"isjdapp": 1})
-        console.log('红包ID：', res.data.result.redpacketInfo.id)
+        console.log('ID：', res.data.result.redpacketInfo.id)
         shareCodesSelf.push(res.data.result.redpacketInfo.id)
       } catch (e) {
         console.log('getShareCodeSelf error', e)
@@ -76,10 +77,7 @@ async function getShareCodeSelf(one: boolean = false) {
   }
 }
 
-async function open(autoOpen: boolean = false) {
-  if (new Date().getHours() === 18) {
-    autoOpen = true
-  }
+async function open(autoOpen: number) {
   for (let [index, value] of cookiesArr.entries()) {
     try {
       cookie = value
@@ -89,9 +87,9 @@ async function open(autoOpen: boolean = false) {
       res = await api('h5activityIndex', {"isjdapp": 1})
       for (let t of res.data.result.redpacketConfigFillRewardInfo) {
         if (t.packetStatus === 1) {
-          console.log(`红包${j}可拆`)
+          console.log(`${j} 可拆`)
         } else if (t.packetStatus === 2) {
-          console.log(`红包${j}已拆`)
+          console.log(`${j} 已拆`)
         }
         j++
       }
@@ -100,7 +98,6 @@ async function open(autoOpen: boolean = false) {
       j = 1
       for (let t of res.data.result.redpacketConfigFillRewardInfo) {
         if (t.packetStatus === 1) {
-          console.log(`红包${j}可拆`)
           if (autoOpen) {
             log = await getLog()
             res = await api('h5receiveRedpacketAll', {random: log.match(/"random":"(\d+)"/)[1], log: log.match(/"log":"(.*)"/)[1], sceneid: 'JLHBhPageh5'})
@@ -118,7 +115,7 @@ async function open(autoOpen: boolean = false) {
     } catch (e) {
       console.log(e)
     }
-    await wait(6000)
+    await wait(3000)
   }
 }
 
@@ -130,33 +127,45 @@ async function help() {
       if (shareCodesHW.length === 0) {
         shareCodesHW = await getshareCodeHW('jlhb')
       }
-      if (index === 0 && cookiesArr.length === 1) {
+      if (index === 0) {
         shareCodes = Array.from(new Set([...shareCodesHW, ...shareCodesSelf]))
       } else {
         shareCodes = Array.from(new Set([...shareCodesSelf, ...shareCodesHW]))
       }
 
-      let me: string = await getShareCodeSelf(true)
+      let me: string = await getShareCodeSelf(true), remain: boolean = true
       for (let code of shareCodes) {
+        if (!remain) break
+        let success: boolean = false
         if (!fullCode.includes(code) && code !== me) {
           console.log(`账号${index + 1} ${UserName} 去助力 ${code} ${shareCodesSelf.includes(code) ? '*内部*' : ''}`)
-
-          log = await getLog()
-          res = await api('jinli_h5assist', {"redPacketId": code, "followShop": 0, random: log.match(/"random":"(\d+)"/)[1], log: log.match(/"log":"(.*)"/)[1], sceneid: 'JLHBhPageh5'})
-          if (res.data.result.status === 0) {
-            console.log('助力成功：', parseFloat(res.data.result.assistReward.discount))
-            await wait(45000)
-            break
-          } else if (res.data.result.status === 3) {
-            console.log('今日助力次数已满')
-            await wait(45000)
-            break
-          } else {
-            console.log('助力结果：', res.data.result.statusDesc)
-            if (res.data.result.statusDesc === '啊偶，TA的助力已满，开启自己的红包活动吧~') {
-              fullCode.push(code)
+          for (let i = 0; i < 5; i++) {
+            if (success) break
+            log = await getLog()
+            res = await api('jinli_h5assist', {"redPacketId": code, "followShop": 0, random: log.match(/"random":"(\d+)"/)[1], log: log.match(/"log":"(.*)"/)[1], sceneid: 'JLHBhPageh5'})
+            if (res.rtn_code === 403) {
+              console.log('log error')
+              await wait(5000)
+            } else {
+              success = true
+              if (res.data.result.status === 0) {
+                console.log('助力成功：', parseFloat(res.data.result.assistReward.discount))
+                await wait(45000)
+                remain = false
+                break
+              } else if (res.data.result.status === 3) {
+                console.log('今日助力次数已满')
+                remain = false
+                await wait(45000)
+                break
+              } else {
+                console.log('助力结果：', res.data.result.statusDesc)
+                if (res.data.result.statusDesc === '啊偶，TA的助力已满，开启自己的红包活动吧~') {
+                  fullCode.push(code)
+                }
+                await wait(45000)
+              }
             }
-            await wait(45000)
           }
         }
       }
