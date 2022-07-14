@@ -291,13 +291,22 @@ if(DisableIndex!=-1){
 	EnableJoyRun=false
 }
 
+//E卡查询
 let EnableCheckEcard=true;
 DisableIndex=strDisableList.findIndex((item) => item === "E卡查询");
 if(DisableIndex!=-1){
 	console.log("检测到设定关闭E卡查询");
 	EnableCheckEcard=false
 }
-	
+
+//京豆收益查询
+let EnableCheckBean=true;
+DisableIndex=strDisableList.findIndex((item) => item === "京豆收益");
+if(DisableIndex!=-1){
+	console.log("检测到设定关闭京豆收益查询");
+	EnableCheckBean=false
+}
+
 !(async() => {
 	if (!cookiesArr[0]) {
 		$.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {
@@ -681,21 +690,23 @@ async function showMsg() {
 		}
 
 	}
+	if (EnableCheckBean) {
+	    ReturnMessage += `【今日京豆】收${$.todayIncomeBean}豆`;
+	    strsummary += `【今日京豆】收${$.todayIncomeBean}豆`;
+	    if ($.todayOutcomeBean != 0) {
+	        ReturnMessage += `,支${$.todayOutcomeBean}豆`;
+	        strsummary += `,支${$.todayOutcomeBean}豆`;
+	    }
+	    ReturnMessage += `\n`;
+	    strsummary += `\n`;
+	    ReturnMessage += `【昨日京豆】收${$.incomeBean}豆`;
 
-	ReturnMessage += `【今日京豆】收${$.todayIncomeBean}豆`;
-	strsummary+= `【今日京豆】收${$.todayIncomeBean}豆`;
-	if ($.todayOutcomeBean != 0) {
-		ReturnMessage += `,支${$.todayOutcomeBean}豆`;
-		strsummary += `,支${$.todayOutcomeBean}豆`;
+	    if ($.expenseBean != 0) {
+	        ReturnMessage += `,支${$.expenseBean}豆`;
+	    }
+	    ReturnMessage += `\n`;
 	}
-	ReturnMessage += `\n`;
-	strsummary+= `\n`;
-	ReturnMessage += `【昨日京豆】收${$.incomeBean}豆`;
 	
-	if ($.expenseBean != 0) {
-		ReturnMessage += `,支${$.expenseBean}豆`;		
-	}
-	ReturnMessage += `\n`;	
 	
 	if ($.beanCount){		
 		ReturnMessage += `【当前京豆】${$.beanCount-$.beanChangeXi}豆(≈${(($.beanCount-$.beanChangeXi)/ 100).toFixed(2)}元)\n`;
@@ -708,20 +719,24 @@ async function showMsg() {
 			strsummary += `【当前京豆】${$.beanCount-$.beanChangeXi}豆(≈${(($.beanCount-$.beanChangeXi)/ 100).toFixed(2)}元)\n`;
 		}			
 	}
-	
+
 	if (EnableJxBeans) {
-		ReturnMessage += `【今日喜豆】收${$.todayinJxBean}豆`;		
-		if ($.todayOutJxBean != 0) {
-			ReturnMessage += `,支${$.todayOutJxBean}豆`;			
-		}
-		ReturnMessage += `\n`;		
-		ReturnMessage += `【昨日喜豆】收${$.inJxBean}豆`;		
-		if ($.OutJxBean != 0) {
-			ReturnMessage += `,支${$.OutJxBean}豆`;			
-		}
-		ReturnMessage += `\n`;		
-		ReturnMessage += `【当前喜豆】${$.xibeanCount}喜豆(≈${($.xibeanCount/ 100).toFixed(2)}元)\n`;
-		strsummary += `【当前喜豆】${$.xibeanCount}豆(≈${($.xibeanCount/ 100).toFixed(2)}元)\n`;
+	    if ($.todayinJxBean || $.todayOutJxBean) {
+	        ReturnMessage += `【今日喜豆】收${$.todayinJxBean}豆`;
+	        if ($.todayOutJxBean != 0) {
+	            ReturnMessage += `,支${$.todayOutJxBean}豆`;
+	        }
+	        ReturnMessage += `\n`;
+	    }
+	    if ($.inJxBean || $.OutJxBean) {
+	        ReturnMessage += `【昨日喜豆】收${$.inJxBean}豆`;
+	        if ($.OutJxBean != 0) {
+	            ReturnMessage += `,支${$.OutJxBean}豆`;
+	        }
+			ReturnMessage += `\n`;
+	    }	    
+	    ReturnMessage += `【当前喜豆】${$.xibeanCount}喜豆(≈${($.xibeanCount/ 100).toFixed(2)}元)\n`;
+	    strsummary += `【当前喜豆】${$.xibeanCount}豆(≈${($.xibeanCount/ 100).toFixed(2)}元)\n`;
 	}
 
 
@@ -1014,79 +1029,81 @@ async function showMsg() {
 	//$.msg($.name, '', ReturnMessage , {"open-url": "https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean"});
 }
 async function bean() {
-	// console.log(`北京时间零点时间戳:${parseInt((Date.now() + 28800000) / 86400000) * 86400000 - 28800000}`);
-	// console.log(`北京时间2020-10-28 06:16:05::${new Date("2020/10/28 06:16:05+08:00").getTime()}`)
-	// 不管哪个时区。得到都是当前时刻北京时间的时间戳 new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000
+	if (EnableCheckBean) {
+	    // console.log(`北京时间零点时间戳:${parseInt((Date.now() + 28800000) / 86400000) * 86400000 - 28800000}`);
+	    // console.log(`北京时间2020-10-28 06:16:05::${new Date("2020/10/28 06:16:05+08:00").getTime()}`)
+	    // 不管哪个时区。得到都是当前时刻北京时间的时间戳 new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000
 
-	//前一天的0:0:0时间戳
-	const tm = parseInt((Date.now() + 28800000) / 86400000) * 86400000 - 28800000 - (24 * 60 * 60 * 1000);
-	// 今天0:0:0时间戳
-	const tm1 = parseInt((Date.now() + 28800000) / 86400000) * 86400000 - 28800000;
-	let page = 1,
-	t = 0,
-	yesterdayArr = [],
-	todayArr = [];
-	do {
-		let response = await getJingBeanBalanceDetail(page);
-		await $.wait(1000);
-		// console.log(`第${page}页: ${JSON.stringify(response)}`);
-		if (response && response.code === "0") {
-			page++;
-			let detailList = response.detailList;
-			if (detailList && detailList.length > 0) {
-				for (let item of detailList) {
-					const date = item.date.replace(/-/g, '/') + "+08:00";
-					if (new Date(date).getTime() >= tm1 && (!item['eventMassage'].includes("退还") && !item['eventMassage'].includes('扣赠'))) {
-						todayArr.push(item);
-					} else if (tm <= new Date(date).getTime() && new Date(date).getTime() < tm1 && (!item['eventMassage'].includes("退还") && !item['eventMassage'].includes('扣赠'))) {
-						//昨日的
-						yesterdayArr.push(item);
-					} else if (tm > new Date(date).getTime()) {
-						//前天的
-						t = 1;
-						break;
-					}
-				}
-			} else {
-				$.errorMsg = `数据异常`;
-				$.msg($.name, ``, `账号${$.index}：${$.nickName}\n${$.errorMsg}`);
-				t = 1;
-			}
-		} else if (response && response.code === "3") {
-			console.log(`cookie已过期，或者填写不规范，跳出`)
-			t = 1;
-		} else {
-			console.log(`未知情况：${JSON.stringify(response)}`);
-			console.log(`未知情况，跳出`)
-			t = 1;
-		}
-	} while (t === 0);
-	for (let item of yesterdayArr) {
-		if (Number(item.amount) > 0) {
-			$.incomeBean += Number(item.amount);
-		} else if (Number(item.amount) < 0) {
-			$.expenseBean += Number(item.amount);
-		}
-	}
-	for (let item of todayArr) {
-		if (Number(item.amount) > 0) {
-			$.todayIncomeBean += Number(item.amount);
-		} else if (Number(item.amount) < 0) {
-			$.todayOutcomeBean += Number(item.amount);
-		}
-	}
-	$.todayOutcomeBean = -$.todayOutcomeBean;
-	$.expenseBean = -$.expenseBean;
-	
-	decExBean =0;
-	if (EnableOverBean) {
-	    await queryexpirejingdou(); //过期京豆
-	    if (decExBean && doExJxBeans == "true") {
-	        var jxbeans = await exchangejxbeans(decExBean);
-	        if (jxbeans) {
-	            $.beanChangeXi = decExBean;
-	            console.log(`已为您将` + decExBean + `临期京豆转换成喜豆！`);
-	            strGuoqi += `已为您将` + decExBean + `临期京豆转换成喜豆！\n`;
+	    //前一天的0:0:0时间戳
+	    const tm = parseInt((Date.now() + 28800000) / 86400000) * 86400000 - 28800000 - (24 * 60 * 60 * 1000);
+	    // 今天0:0:0时间戳
+	    const tm1 = parseInt((Date.now() + 28800000) / 86400000) * 86400000 - 28800000;
+	    let page = 1,
+	    t = 0,
+	    yesterdayArr = [],
+	    todayArr = [];
+	    do {
+	        let response = await getJingBeanBalanceDetail(page);
+	        await $.wait(1000);
+	        // console.log(`第${page}页: ${JSON.stringify(response)}`);
+	        if (response && response.code === "0") {
+	            page++;
+	            let detailList = response.detailList;
+	            if (detailList && detailList.length > 0) {
+	                for (let item of detailList) {
+	                    const date = item.date.replace(/-/g, '/') + "+08:00";
+	                    if (new Date(date).getTime() >= tm1 && (!item['eventMassage'].includes("退还") && !item['eventMassage'].includes("物流") && !item['eventMassage'].includes('扣赠'))) {
+	                        todayArr.push(item);
+	                    } else if (tm <= new Date(date).getTime() && new Date(date).getTime() < tm1 && (!item['eventMassage'].includes("退还") && !item['eventMassage'].includes("物流") && !item['eventMassage'].includes('扣赠'))) {
+	                        //昨日的
+	                        yesterdayArr.push(item);
+	                    } else if (tm > new Date(date).getTime()) {
+	                        //前天的
+	                        t = 1;
+	                        break;
+	                    }
+	                }
+	            } else {
+	                $.errorMsg = `数据异常`;
+	                $.msg($.name, ``, `账号${$.index}：${$.nickName}\n${$.errorMsg}`);
+	                t = 1;
+	            }
+	        } else if (response && response.code === "3") {
+	            console.log(`cookie已过期，或者填写不规范，跳出`)
+	            t = 1;
+	        } else {
+	            console.log(`未知情况：${JSON.stringify(response)}`);
+	            console.log(`未知情况，跳出`)
+	            t = 1;
+	        }
+	    } while (t === 0);
+	    for (let item of yesterdayArr) {
+	        if (Number(item.amount) > 0) {
+	            $.incomeBean += Number(item.amount);
+	        } else if (Number(item.amount) < 0) {
+	            $.expenseBean += Number(item.amount);
+	        }
+	    }
+	    for (let item of todayArr) {
+	        if (Number(item.amount) > 0) {
+	            $.todayIncomeBean += Number(item.amount);
+	        } else if (Number(item.amount) < 0) {
+	            $.todayOutcomeBean += Number(item.amount);
+	        }
+	    }
+	    $.todayOutcomeBean = -$.todayOutcomeBean;
+	    $.expenseBean = -$.expenseBean;
+
+	    decExBean = 0;
+	    if (EnableOverBean) {
+	        await queryexpirejingdou(); //过期京豆
+	        if (decExBean && doExJxBeans == "true") {
+	            var jxbeans = await exchangejxbeans(decExBean);
+	            if (jxbeans) {
+	                $.beanChangeXi = decExBean;
+	                console.log(`已为您将` + decExBean + `临期京豆转换成喜豆！`);
+	                strGuoqi += `已为您将` + decExBean + `临期京豆转换成喜豆！\n`;
+	            }
 	        }
 	    }
 	}
@@ -1682,7 +1699,7 @@ function getCoupon() {
             url: `https://wq.jd.com/activeapi/queryjdcouponlistwithfinance?state=1&wxadd=1&filterswitch=1&_=${Date.now()}&sceneval=2&g_login_type=1&callback=jsonpCBKB&g_ty=ls`,
             headers: {
                 'authority': 'wq.jd.com',
-                "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+                "User-Agent": "jdapp;iPhone;10.1.2;15.0;network/wifi;Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
                 'accept': '*/*',
                 'referer': 'https://wqs.jd.com/',
                 'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
@@ -1691,7 +1708,7 @@ function getCoupon() {
 			timeout: 10000
         }
         $.get(options, async(err, resp, data) => {
-            try {
+            try {				
                 data = JSON.parse(data.match(new RegExp(/jsonpCBK.?\((.*);*/))[1]);
                 let couponTitle = '';
                 let couponId = '';
