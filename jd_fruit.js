@@ -38,6 +38,8 @@ let shareCodes = [ // 这个列表填入你要助力的好友的shareCode
   'c62ea653b99d43aa93c5aa6552191512',
   'c62ea653b99d43aa93c5aa6552191512',
   'c62ea653b99d43aa93c5aa6552191512',
+  'c62ea653b99d43aa93c5aa6552191512',
+  'c62ea653b99d43aa93c5aa6552191512',
   'c62ea653b99d43aa93c5aa6552191512'
 ]
 let message = '', subTitle = '', option = {}, isFruitFinished = false;
