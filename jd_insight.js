@@ -1,5 +1,7 @@
 /*
-cron "35 9,15,20 * * *" jd_insight.js, tag:京洞察问卷通知
+cron "35 11 * * *" jd_insight.js, tag:京洞察问卷通知
+
+by ccwav
  */
  
 const $ = new Env('京洞察问卷通知');
@@ -46,7 +48,7 @@ if ($.isNode()) {
 			$.nickName = '';
 			$.maxPage = '1';
 			message = '';
-			await TotalBean();
+			//await TotalBean();
 			console.log(`******开始查询【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
 			if (!$.isLogin) {
 				$.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
