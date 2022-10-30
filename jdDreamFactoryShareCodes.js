@@ -11,6 +11,7 @@ let shareCodes = [
   '1D7lx5mtUwOtUfDMFyo8RQ==',
   '1D7lx5mtUwOtUfDMFyo8RQ==',
   '1D7lx5mtUwOtUfDMFyo8RQ==',
+  '1D7lx5mtUwOtUfDMFyo8RQ==',
   '1D7lx5mtUwOtUfDMFyo8RQ=='
 ]
 // 判断github action里面是否有京喜工厂互助码

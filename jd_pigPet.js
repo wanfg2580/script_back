@@ -10,17 +10,17 @@
 ===============Quantumultx===============
 [task_local]
 #京东金融养猪猪
-12 0-23/6 * * * https://raw.githubusercontent.com/222222/sync/jd_scripts/jd_pigPet.js, tag=京东金融养猪猪, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdyz.png, enabled=true
+12 0-23/6 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_pigPet.js, tag=京东金融养猪猪, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdyz.png, enabled=true
 
 ================Loon==============
 [Script]
-cron "12 0-23/6 * * *" script-path=https://raw.githubusercontent.com/222222/sync/jd_scripts/jd_pigPet.js, tag=京东金融养猪猪
+cron "12 0-23/6 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_pigPet.js, tag=京东金融养猪猪
 
 ===============Surge=================
-京东金融养猪猪 = type=cron,cronexp="12 0-23/6 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/222222/sync/jd_scripts/jd_pigPet.js
+京东金融养猪猪 = type=cron,cronexp="12 0-23/6 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_pigPet.js
 
 ============小火箭=========
-京东金融养猪猪 = type=cron,script-path=https://raw.githubusercontent.com/222222/sync/jd_scripts/jd_pigPet.js, cronexpr="12 0-23/6 * * *", timeout=3600, enable=true
+京东金融养猪猪 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_pigPet.js, cronexpr="12 0-23/6 * * *", timeout=3600, enable=true
 */
 const $ = new Env('金融养猪');
 const url = require('url');
@@ -75,11 +75,11 @@ if ($.isNode()) {
       await jdPigPet();
     }
   }
-  let res2 = await getAuthorShareCode('https://raw.githubusercontent.com/222222/11111128/master/shareCodes/11111127')
+  let res2 = await getAuthorShareCode('https://raw.githubusercontent.com/Aaron-lv/updateTeam/master/shareCodes/pig.json')
   if (!res2) {
-    $.http.get({url: 'https://purge.jsdelivr.net/gh/222222/11111128@master/shareCodes/11111127'}).then((resp) => {}).catch((e) => console.log('刷新CDN异常', e));
+    $.http.get({url: 'https://purge.jsdelivr.net/gh/Aaron-lv/updateTeam@master/shareCodes/pig.json'}).then((resp) => {}).catch((e) => console.log('刷新CDN异常', e));
     await $.wait(2000)
-    res2 = await getAuthorShareCode('https://cdn.jsdelivr.net/gh/222222/11111128@master/shareCodes/11111127')
+    res2 = await getAuthorShareCode('https://cdn.jsdelivr.net/gh/Aaron-lv/updateTeam@master/shareCodes/pig.json')
   }
   $.shareCodes = [...new Set([...$.shareCodes, ...(res2 || [])])]
   console.log($.shareCodes)
@@ -432,7 +432,7 @@ function pigPetRank() {
                   if ($.friends[i].status === 1) {
                     $.friendId = $.friends[i].uid
                     $.name = $.friends[i].nickName
-                    if (!['888888', 'xfa05'].includes($.name)) { //放过孩子吧TT
+                    if (!['zero205', 'xfa05'].includes($.name)) { //放过孩子吧TT
                       console.log(`去抢夺【${$.friends[i].nickName}】的食物`)
                       await $.wait(2000)
                       await pigPetFriendIndex($.friendId)

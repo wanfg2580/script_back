@@ -11,6 +11,7 @@ let shareCodes = [
   'T018v_VwRRwc9lPeJR2b1ACjVWnYaS5kRrbA',
   'T018v_VwRRwc9lPeJR2b1ACjVWnYaS5kRrbA',
   'T018v_VwRRwc9lPeJR2b1ACjVWnYaS5kRrbA',
+  'T018v_VwRRwc9lPeJR2b1ACjVWnYaS5kRrbA',
   'T018v_VwRRwc9lPeJR2b1ACjVWnYaS5kRrbA'
 ]
 // 判断github action里面是否有东东工厂互助码
