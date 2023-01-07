@@ -57,7 +57,7 @@ let lnrun = 0;
       $.index = i + 1;
       $.isLogin = true;
       $.nickName = '';
-      $.UA = require('./USER_AGENTS').UARAM();
+      $.UA = require('./USER_AGENTS').USER_AGENT;
       //await TotalBean();
       console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
       if (!$.isLogin) {
