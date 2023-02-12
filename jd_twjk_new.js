@@ -1,7 +1,7 @@
 /*
  特务集卡
  脚本没有自动开卡，会尝试领取开卡奖励
-10 10,17,19 * * * https://raw.githubusercontent.com/11111129/jdpro/main/jd_twjk_new.js
+10 10,17,19 * * * https://raw.githubusercontent.com/6dylan6/jdpro/main/jd_twjk_new.js
 updatetime: 2022/11/5 fix
 * */
 const $ = new Env('特务集卡');
@@ -152,7 +152,7 @@ async function main(_0x14f2ac) {
         } if (_0x4a424c.assignmentType === 1) {
             for (let i = 0; i < (_0x4a424c.assignmentTimesLimit - _0x4a424c.completionCnt); i++) {
                 console.log('任务：' + _0x4a424c.assignmentName + ',去执行');
-                let _0x3c7f29 = _0x4a424c.ext.shoppingActivity[i].itemId || '';
+                let _0x3c7f29 = _0x4a424c.ext.shoppingActivity && _0x4a424c.ext.shoppingActivity[i].itemId || _0x4a424c.ext.productsInfo[i].itemId ||'';
                 if (!_0x3c7f29) {
                     console.log('任务：' + _0x4a424c.assignmentName + ',信息异常');
                 }

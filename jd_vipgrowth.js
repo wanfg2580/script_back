@@ -1,13 +1,11 @@
 
 /*
-10豆 
-入口：排行榜-宝藏榜
-10 10 * * * jd_TreasureRank.js
-updatetime: 2022/9/29
-author: https://github.com/11111129/jdpro
+京享值任务领豆，每周一次
+9 9 * * 5 jd_vipgrowth.js
+updateTime: 2022/10/5
  */
 
-const $ = new Env('京东宝藏榜');
+const $ = new Env('查看京享值权益');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let jdNotify = true;
@@ -42,8 +40,18 @@ if ($.isNode()) {
                 }
                 continue
             }
-            await doTreasureInteractive({ "type": "3", "itemId": "" }, 3)
-            await $.wait(2000);
+            await info();
+            await $.wait(500);
+            if ($.taskStatus !== 3 && $.taskEncId === 'ifiWT91zw2w=') {
+                await dotask('taskReceive');
+                await $.wait(1000);
+                await dotask('taskFinish');
+                await $.wait(500);
+                await dotask('taskReward'); 
+            } else {
+                $.log('已领取过！')
+            }
+			await $.wait(2000)
         }
     }
 })()
@@ -56,89 +64,78 @@ if ($.isNode()) {
 
 
 
-function getTreasureRanks() {
-    body = 'functionId=getTreasureRanks&body={"queryType":"1","rankType":18,"ids":["1"]}&appid=newrank_action&clientVersion=11.2.2&client=wh5&ext={"prstate":"0"}'
-    return new Promise(async (resolve) => {
-        $.post(taskUrl(body), async (err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(` API请求失败，请检查网路重试`)
-                } else {
-                    data = JSON.parse(data)
-                    if (data.isSuccess) {
-                        $.storeIdlist = data.result.data.map((valu, index, arr) => { return valu.storeId });
-                    } else {
-                        console.log(data)
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve()
-            }
-        })
-    })
-}
-
-function doTreasureInteractive(body, type) {
-    body = `functionId=doTreasureInteractive&body=${encodeURIComponent(JSON.stringify(body))}&appid=newrank_action&clientVersion=11.2.2&client=wh5&ext={"prstate":"0"}`
-    return new Promise(async (resolve) => {
-        $.post(taskUrl(body), async (err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(` API请求失败，请检查网路重试`)
-                } else {
-                    data = JSON.parse(data)
-                    //console.log(data);
-                    if (data.isSuccess) {
-                        switch (type) {
-                            case 1:
-                                $.browseTaskCompletionCnt = data.result.browseTaskCompletionCnt;
-                                break;
-                            case 2:
-                                $.taskParam = data.result.taskParam;
-                                break;
-                            case 3:
-                                if (data.result.rewardType === 20001) {
-                                    console.log(data.result.rewardTitle, data.result.discount);
-                                } else {
-                                    console.log(data);
-                                }
-                                break;
-                        }
-                    } else {
-                        console.log(data)
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve()
-            }
-        })
-    })
-}
-
-function taskUrl(body) {
-    return {
-        url: `https://api.m.jd.com/client.action`,
-        body,
+async function info() {
+    let opt = {
+        url: 'https://api.m.jd.com/?t=1664952667319&functionId=pg_load_floor_data&appid=vip_h5&body=%7B%22floorToken%22:%22daf39463-5e0e-40d6-83f9-81a2b3d5164f%22%7D',
         headers: {
             'Host': 'api.m.jd.com',
-            'origin': 'https://h5.m.jd.com',
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'origin': 'https://vipgrowth.m.jd.com',
+            //'Content-Type': 'application/x-www-form-urlencoded',
             'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
             'Cookie': cookie
         }
     }
+    return new Promise(async (resolve) => {
+        $.get(opt, async (err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(` API请求失败，请检查网路重试`)
+                } else {
+                    data = JSON.parse(data)
+                    if (data.success) {
+                        $.taskStatus = data.data.floorData.jxScoreTaskList.taskInfoList[0].taskStatus;
+                        $.taskEncId = data.data.floorData.jxScoreTaskList.taskInfoList[0].taskEncId;
+                    } else {
+                        console.log(data.message)
+                    }
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve(data)
+            }
+        })
+    })
 }
 
-function getExtract(array) {
-    const random = (min, max) => Math.floor(Math.random() * (max - min) + min);
-    let index = random(0, array.length);
-    return array.splice(index, 1);
+function dotask(fn) {
+    return new Promise(async (resolve) => {
+        $.post(taskUrl(fn), async (err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(` API请求失败，请检查网路重试`)
+                } else {
+                    data = JSON.parse(data)
+                    if (data.success) {
+                        if(fn === 'taskReward') console.log('任务完成，获得5京豆');
+                    } else {
+                        console.log(`${fn} , ${data.message}`);
+                    }
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve(data)
+            }
+        })
+    })
+}
+function taskUrl(fn) {
+    body = { "floorToken": "daf39463-5e0e-40d6-83f9-81a2b3d5164f", "dataSourceCode": fn, "argMap": { "taskEncId": "ifiWT91zw2w=" } };
+    if (fn === 'taskFinish') body = { "floorToken": "daf39463-5e0e-40d6-83f9-81a2b3d5164f", "dataSourceCode": "taskFinish", "argMap": { "taskEncId": "ifiWT91zw2w=", "extParamsStr": { "browseTrxId": 5 } } }
+    return {
+        url: `https://api.m.jd.com/?functionId=pg_interact_interface_invoke&appid=task_fasten&body=${encodeURIComponent(JSON.stringify(body))}`,
+        //body: `functionId=promote_mainDivideRedPacket&client=m&clientVersion=-1&appid=signed_wh5&body={}`,
+        headers: {
+            'Host': 'api.m.jd.com',
+            'origin': 'https://vipgrowth.m.jd.com',
+            'Content-Type': 'application/json',
+            'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+            'Cookie': cookie
+        }
+    }
 }
 
 function TotalBean() {

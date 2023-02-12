@@ -1,13 +1,9 @@
-
 /*
-10豆 
-入口：排行榜-宝藏榜
-10 10 * * * jd_TreasureRank.js
-updatetime: 2022/9/29
-author: https://github.com/11111129/jdpro
+22 2 * * * https://raw.githubusercontent.com/6dylan6/jdpro/main/jd_wrtred.js 
+updatetime:2022/11/23
  */
 
-const $ = new Env('京东宝藏榜');
+const $ = new Env('万人团红包');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let jdNotify = true;
@@ -33,6 +29,7 @@ if ($.isNode()) {
             $.index = i + 1;
             $.isLogin = true;
             $.nickName = '';
+            $.UA=require('./USER_AGENTS').UARAM();
             await TotalBean();
             console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
             if (!$.isLogin) {
@@ -42,8 +39,8 @@ if ($.isNode()) {
                 }
                 continue
             }
-            await doTreasureInteractive({ "type": "3", "itemId": "" }, 3)
-            await $.wait(2000);
+            await WRT();
+            await $.wait(2000)
         }
     }
 })()
@@ -56,131 +53,76 @@ if ($.isNode()) {
 
 
 
-function getTreasureRanks() {
-    body = 'functionId=getTreasureRanks&body={"queryType":"1","rankType":18,"ids":["1"]}&appid=newrank_action&clientVersion=11.2.2&client=wh5&ext={"prstate":"0"}'
+async function WRT() {
     return new Promise(async (resolve) => {
-        $.post(taskUrl(body), async (err, resp, data) => {
+        $.post(getUrl(), async (err, resp, data) => {
             try {
                 if (err) {
                     console.log(`${JSON.stringify(err)}`)
                     console.log(` API请求失败，请检查网路重试`)
                 } else {
                     data = JSON.parse(data)
-                    if (data.isSuccess) {
-                        $.storeIdlist = data.result.data.map((valu, index, arr) => { return valu.storeId });
-                    } else {
-                        console.log(data)
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve()
-            }
-        })
-    })
-}
-
-function doTreasureInteractive(body, type) {
-    body = `functionId=doTreasureInteractive&body=${encodeURIComponent(JSON.stringify(body))}&appid=newrank_action&clientVersion=11.2.2&client=wh5&ext={"prstate":"0"}`
-    return new Promise(async (resolve) => {
-        $.post(taskUrl(body), async (err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(` API请求失败，请检查网路重试`)
-                } else {
-                    data = JSON.parse(data)
-                    //console.log(data);
-                    if (data.isSuccess) {
-                        switch (type) {
-                            case 1:
-                                $.browseTaskCompletionCnt = data.result.browseTaskCompletionCnt;
-                                break;
-                            case 2:
-                                $.taskParam = data.result.taskParam;
-                                break;
-                            case 3:
-                                if (data.result.rewardType === 20001) {
-                                    console.log(data.result.rewardTitle, data.result.discount);
-                                } else {
-                                    console.log(data);
-                                }
-                                break;
+                    if (data.code == 0) {
+                        if (data.data.bizCode == 0) {
+                            console.log(` 恭喜获得 ${data.data?.result?.hongBaoResult.hongBao.disCount} 红包`);
+                        }else{
+                            console.log(data.data.bizMsg);
                         }
                     } else {
-                        console.log(data)
+                        console.log(data.msg)
                     }
                 }
             } catch (e) {
                 $.logErr(e, resp)
             } finally {
-                resolve()
+                resolve(data)
             }
         })
     })
 }
 
-function taskUrl(body) {
+function getUrl() {
     return {
-        url: `https://api.m.jd.com/client.action`,
-        body,
+        url: `https://api.m.jd.com`,
+        body: `appid=wh5&clientVersion=1.0.0&functionId=wanrentuan_superise_send&body={"channel":2}&area=2_2813_61130_0`,
         headers: {
             'Host': 'api.m.jd.com',
-            'origin': 'https://h5.m.jd.com',
+            'Origin': 'https://h5.m.jd.com',
             'Content-Type': 'application/x-www-form-urlencoded',
-            'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+            'User-Agent':$.UA,
             'Cookie': cookie
         }
     }
 }
 
-function getExtract(array) {
-    const random = (min, max) => Math.floor(Math.random() * (max - min) + min);
-    let index = random(0, array.length);
-    return array.splice(index, 1);
-}
-
 function TotalBean() {
-    return new Promise(async resolve => {
+    return new Promise((resolve) => {
         const options = {
-            url: "https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2",
+            url: 'https://plogin.m.jd.com/cgi-bin/ml/islogin',
             headers: {
-                Host: "wq.jd.com",
-                Accept: "*/*",
-                Connection: "keep-alive",
-                Cookie: cookie,
-                "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
-                "Accept-Language": "zh-cn",
-                "Referer": "https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&",
-                "Accept-Encoding": "gzip, deflate, br"
-            }
+                "Cookie": cookie,
+                "referer": "https://h5.m.jd.com/",
+                "User-Agent": $.UA,
+            },
+            timeout: 10000
         }
         $.get(options, (err, resp, data) => {
             try {
-                if (err) {
-                    $.logErr(err)
-                } else {
-                    if (data) {
-                        data = JSON.parse(data);
-                        if (data['retcode'] === 1001) {
-                            $.isLogin = false;
-                            return;
-                        }
-                        if (data['retcode'] === 0 && data.data && data.data.hasOwnProperty("userInfo")) {
-                            $.nickName = data.data.userInfo.baseInfo.nickname;
-                        }
-                    } else {
-                        console.log('京东服务器返回空数据');
+                if (data) {
+                    data = JSON.parse(data);
+                    if (data.islogin === "1") {
+                    } else if (data.islogin === "0") {
+                        $.isLogin = false;
                     }
                 }
             } catch (e) {
-                $.logErr(e)
-            } finally {
+                console.log(e);
+            }
+            finally {
                 resolve();
             }
-        })
-    })
+        });
+    });
 }
 function showMsg() {
     return new Promise(resolve => {
