@@ -2,7 +2,7 @@
 2023/2/7  create
 只积分换豆，换积分用jd_washbean.js
 默认定时不执行，自行设置
-33 2 1 1 * https://raw.githubusercontent.com/11111129/jdpro/main/jd_fen2bean.js
+33 2 1 1 * https://raw.githubusercontent.com/6dylan6/jdpro/main/jd_fen2bean.js
 问题建议TG -> https://t.me/dylan_jdpro
 */
 
