@@ -36,7 +36,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
             $.nickName = '';
             message = '';
             uuid = randomString();
-            $.UA = ua.UARAM ? ua.UARAM() : ua.USER_AGENT;
+            $.UA = ua.USER_AGENTS ? ua.USER_AGENTS() : ua.USER_AGENT;
             $.av = $.UA.split(';')[2];
             await TotalBean();
             console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);

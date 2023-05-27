@@ -50,7 +50,7 @@ $.reqnum=1;
             message = '';
             subTitle = '';
             option = {};
-            $.UA = require('./USER_AGENTS').UARAM();
+            $.UA = require('./USER_AGENTS').USER_AGENTS();
             await shareCodesFormat();
             await jdFruit();
         }

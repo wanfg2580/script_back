@@ -70,7 +70,7 @@ $.reqnum = 1;
             message = '';
             subTitle = '';
             option = {};
-            $.UA = ua.UARAM ? ua.UARAM() : ua.USER_AGENT;      
+            $.UA = ua.USER_AGENTS ? ua.USER_AGENTS() : ua.USER_AGENT;
             //await shareCodesFormat();
             await jdFruit();
         }
