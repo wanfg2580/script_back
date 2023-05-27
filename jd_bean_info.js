@@ -40,7 +40,7 @@ if ($.isNode()) {
       $.message = '';
       $.balance = 0;
       $.expiredBalance = 0;
-	  $.UA=require('./USER_AGENTS').USER_AGENTS();
+	  $.UA=require('./USER_AGENTS').UARAM();
       //await TotalBean();
       //console.log(`\n********开始【京东账号${$.index}】${$.nickName || $.UserName}******\n`);
       if (!$.isLogin) {
